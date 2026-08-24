@@ -12,6 +12,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://devcode-tau.vercel.app',
+  'https://devcode-git-main-charan-teja-projects1.vercel.app',
 ];
 
 app.use(cors({
