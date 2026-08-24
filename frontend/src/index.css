@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-app-bg: #0f172a;
+  --color-app-panel: #111827;
+  --color-app-editor: #1e293b;
+  --color-app-border: #334155;
+
+  --color-app-text: #f8fafc;
+  --color-app-muted: #94a3b8;
+
+  --color-app-hover: #1e293b;
+  --color-app-selected: #334155;
+
+  --color-app-success: #22c55e;
+  --color-app-error: #ef4444;
+  --color-app-warning: #f59e0b;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-app-bg);
+    color: var(--color-app-text);
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .ui-panel {
+    @apply bg-app-panel border border-app-border rounded-lg;
+  }
+
+  .ui-button {
+    @apply px-4 py-2 rounded-md transition-colors;
+  }
+
+  .ui-button-primary {
+    @apply px-4 py-2 rounded-md transition-colors bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  .ui-button-secondary {
+    @apply px-4 py-2 rounded-md transition-colors bg-app-panel text-app-text border border-app-border hover:bg-app-hover;
+  }
+
+  .ui-button-danger {
+    @apply px-4 py-2 rounded-md transition-colors bg-red-600 text-white hover:bg-red-700;
+  }
+
+  .ui-badge {
+    @apply px-2 py-1 rounded text-sm;
+  }
+
+  .ui-badge-success {
+    @apply px-2 py-1 rounded text-sm bg-green-500/10 text-app-success;
+  }
+
+  .ui-badge-error {
+    @apply px-2 py-1 rounded text-sm bg-red-500/10 text-app-error;
+  }
+
+  .ui-badge-warning {
+    @apply px-2 py-1 rounded text-sm bg-yellow-500/10 text-app-warning;
+  }
+}
