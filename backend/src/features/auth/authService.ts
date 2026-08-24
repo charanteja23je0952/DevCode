@@ -40,7 +40,7 @@ const createRefreshToken = (id: string): string => {
 
 const signup = async (email: string, password: string): Promise<authResponce> => {
     const user = await User.create({
-        email,
+        email: email.toLowerCase(),
         password
     });
     const accessToken = createAccessToken(user._id.toString());
@@ -53,10 +53,10 @@ const signup = async (email: string, password: string): Promise<authResponce> =>
 };
 
 const login = async (email: string, password: string): Promise<authResponce> => {
-    const user = await User.findOne({ email });
-    if (!user) throw new appError('Email not registered', 401);
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) throw new appError('Invalid email or password', 401);
     const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new appError('Incorrect password', 401);
+    if (!match) throw new appError('Invalid email or password', 401);
     const accessToken = createAccessToken(user._id.toString());
     const refreshToken = createRefreshToken(user._id.toString());
     return {
