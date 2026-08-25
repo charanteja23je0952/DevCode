@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import Question from '../models/quesModel.js';
-import Repo from '../models/repoModel.js';
 import catchAsync from '../../utils/catchAsync.js';
 import { ok } from '../../utils/response.js';
 import appError from '../../utils/appError.js';

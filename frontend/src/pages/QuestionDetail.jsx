@@ -82,6 +82,8 @@ export default function QuestionDetail() {
     );
   }
 
+  if (!question) return null;
+
   return (
     <div className="bg-app-bg py-8 px-4">
       <div className="max-w-4xl mx-auto">

@@ -193,6 +193,8 @@ export default function SubmissionView() {
     );
   }
 
+  if (!submission) return null;
+
   const fileTree = snapshotData ? buildFileTreeFromSnapshotTree(snapshotData.tree) : {};
 
   return (

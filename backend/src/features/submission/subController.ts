@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { Types } from "mongoose";
 import Submission from "../models/subModel.js";
 import Question from "../models/quesModel.js";
-import { getSubmissionSnapshot, getTestExecutionSnapshot } from "../questions/snapshotBuilder.js";
+import { getSubmissionSnapshot } from "../questions/snapshotBuilder.js";
 import catchAsync from '../../utils/catchAsync.js';
 import { ok } from '../../utils/response.js';
 import appError from '../../utils/appError.js';

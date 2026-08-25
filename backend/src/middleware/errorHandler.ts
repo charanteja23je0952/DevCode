@@ -21,6 +21,9 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
             );
             return fail(res, errors.join(", "), 400);
         }
+        if (err.name === "CastError") {
+            return fail(res, "Invalid ID format", 400);
+        }
     }
     if(typeof err === "object" && err !== null && "code" in err && err.code === 11000) {
         return fail(res, "Email already exists", 400);

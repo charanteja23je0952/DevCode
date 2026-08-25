@@ -11,9 +11,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://devcode-tau.vercel.app',
   'https://devcode-git-main-charan-teja-projects1.vercel.app',
-  'https://devcode-gw5vohpm6-charan-teja-projects1.vercel.app',
 ];
 
 app.use(cors({
@@ -36,11 +34,15 @@ if (!DB_URL) throw new Error('DB_URL environment variable is not defined');
 mongoose.connect(DB_URL)
     .then((result) => {
         console.log('Connected to database');
-        app.listen(3000, () => {
-            console.log('Server is running on port 3000');
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+        console.error('Database connection failed:', err);
+        process.exit(1);
+    });
 
 app.use('/auth', auth_routes);
 app.use('/api', ques_routes);
