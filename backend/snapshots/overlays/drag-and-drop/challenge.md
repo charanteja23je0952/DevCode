@@ -1,6 +1,6 @@
 # Frontend — Drag-and-Drop Handler
 
-Restore the `onDragEnd` implementation in `frontend/src/components/TaskBoard.jsx`.
+Restore the `onDragEnd` implementation in `frontend/src/utils/dragDropLogic.js`.
 
 The backend is already functional. Keep the challenge frontend-only.
 

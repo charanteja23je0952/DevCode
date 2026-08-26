@@ -7,7 +7,6 @@ The harness UI is already functional. Keep the challenge helper-only.
 The implementation must:
 - implement useGetTasks hook to fetch tasks with proper loading/error states,
 - implement useCreateTask hook to create tasks with proper mutation handling,
-- handle authentication failures consistently,
 - expose request errors through the hook's error state,
 - support refetch functionality for the tasks query.
 

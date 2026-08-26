@@ -1,18 +1,17 @@
-# Full Stack — Task Creation
+# Backend — Task Creation, User Signup & Login
 
-Complete the end-to-end task creation implementation.
+Complete the task creation, user signup, and login implementations.
 
-Backend: Implement the task creation in `backend/controllers/taskController.js`
-Frontend: Complete the task creation flow in `frontend/src/components/TaskBoard.jsx`
+Backend: Implement `createTask` in `backend/controllers/taskController.js`.
+Backend: Implement `signupUser` and `loginUser` in `backend/controllers/userController.js`.
 
 The implementation must:
-- Backend: create a task from the request body using the existing Mongoose model,
-- Backend: persist it to MongoDB,
-- Backend: return the newly-created document with HTTP 201,
-- Backend: return an appropriate error response if persistence fails,
-- Frontend: build the task payload expected by the backend,
-- Frontend: send it to the existing task creation endpoint,
-- Frontend: use the server response when updating Redux,
-- Frontend: preserve the existing authentication/error behavior.
+- create and persist a task from the request body and return HTTP 201 on success,
+- return an appropriate error response when task persistence fails,
+- validate that both signup and login receive email and password,
+- trim and lowercase the email before lookup for both signup and login,
+- for signup: reject duplicate normalized emails with HTTP 400, hash the password with bcrypt before saving, and return HTTP 201 with success, _id, and normalized email,
+- for login: reject non-existent users with HTTP 404, validate the password against the stored bcrypt hash, reject invalid passwords with HTTP 401, and return HTTP 200 with _id and email on success,
+- generate the existing JWT cookie only after successful signup or login.
 
-Do not change unrelated task operations.
+Keep the existing API contracts, response shapes, JWT helper, models, routes, and unrelated task operations intact.

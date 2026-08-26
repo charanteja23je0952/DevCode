@@ -73,19 +73,20 @@ const questions = [
     overlaySlug: "task-reorder",
   },
   {
-    title: "Redux Task Slice",
+    title: "TaskBoard Search & Sorting",
     reproSteps:
-      "Complete the Redux task slice in " +
-      "frontend/src/redux/features/task/taskSlice.js. setTasks replaces the " +
-      "current task collection and clears loading/error state. addTask adds " +
-      "a new task without removing existing ones. updateTask replaces the " +
-      "matching task by _id, leaving others unchanged. removeTask removes " +
-      "only the task whose _id matches the payload. setLoading and " +
-      "setError update their respective flags. Preserve the existing state " +
-      "shape and action names — other components already depend on this slice.",
+      "Repair the filtering, sorting, and column-grouping logic in " +
+      "frontend/src/components/TaskBoard.jsx. Search must match the task " +
+      "title or description case-insensitively, including the empty-search " +
+      "case. The recent sort must order by createdAt descending, treating " +
+      "missing createdAt as the oldest value, while alphabetical sorting " +
+      "must order by title. The rendered columns must contain only the " +
+      "filtered tasks while preserving the existing column metadata and " +
+      "selected sort order. Keep the existing API calls, Redux wiring, and " +
+      "drag-and-drop behavior unchanged.",
     category: "state",
     layer: "frontend",
-    difficulty: "easy",
+    difficulty: "medium",
     hints: [],
     baseRepoSlug: "mern_task_manager",
     overlaySlug: "redux-task-slice",
@@ -94,13 +95,12 @@ const questions = [
     title: "Drag-and-Drop Handler",
     reproSteps:
       "Restore the onDragEnd implementation in " +
-      "frontend/src/components/TaskBoard .jsx. The backend is already " +
+      "frontend/src/utils/dragDropLogic.js. The backend is already " +
       "functional — keep this frontend-only. It must ignore invalid drops, " +
       "identify the dragged task, map the destination column to the task's " +
       "status, persist the change through the existing API, update Redux " +
-      "from the successful server response, handle authentication failures " +
-      "consistently, and expose other request errors through the " +
-      "component's existing error state.",
+      "from the successful server response, and expose other request errors " +
+      "through the component's existing error state.",
     category: "state",
     layer: "frontend",
     difficulty: "medium",
@@ -115,9 +115,8 @@ const questions = [
       "harness UI is already functional — keep this helper-only. " +
       "Implement useGetTasks to fetch tasks with proper loading/error " +
       "states, and useCreateTask to create tasks with proper mutation " +
-      "handling. Handle authentication failures consistently, expose " +
-      "request errors through the hook's error state, and support refetch " +
-      "for the tasks query.",
+      "handling. Expose request errors through the hook's error state and " +
+      "support refetch for the tasks query.",
     category: "api-contract",
     layer: "frontend",
     difficulty: "medium",
@@ -126,19 +125,23 @@ const questions = [
     overlaySlug: "react-query-harness",
   },
   {
-    title: "Task Creation (Full Stack)",
+    title: "Task Creation, User Signup & Login",
     reproSteps:
-      "Complete the end-to-end task creation flow. Backend " +
-      "(backend/controllers/taskController.js): create a task from the " +
-      "request body using the existing Mongoose model, persist it, return " +
-      "the new document with HTTP 201, and return an appropriate error " +
-      "response if persistence fails. Frontend " +
-      "(frontend/src/components/TaskBoard .jsx): build the payload expected " +
-      "by the backend, send it to the existing endpoint, use the server " +
-      "response when updating Redux, and preserve existing " +
-      "authentication/error behavior.",
+      "Repair three existing backend flows. In backend/controllers/taskController.js, " +
+      "implement createTask using the existing Mongoose model, persist the " +
+      "request body, return the created task with HTTP 201, and return an " +
+      "appropriate 4xx response for invalid data or persistence failures. In " +
+      "backend/controllers/userController.js, repair signupUser and loginUser " +
+      "so both validate email and password, trim and lowercase the email before " +
+      "lookup, generate the existing JWT cookie only after successful operation. " +
+      "For signup: reject duplicate normalized emails with HTTP 400, hash the " +
+      "password with bcrypt before persistence, and return HTTP 201 with success, " +
+      "_id, and normalized email. For login: reject non-existent users with HTTP 404, " +
+      "validate the password against the stored bcrypt hash, reject invalid passwords " +
+      "with HTTP 401, and return HTTP 200 with _id and email. Keep logoutUser, routes, " +
+      "models, and unrelated task operations unchanged.",
     category: "api-contract",
-    layer: "fullstack",
+    layer: "backend",
     difficulty: "hard",
     hints: [],
     baseRepoSlug: "mern_task_manager",
@@ -151,7 +154,7 @@ const questions = [
       "(backend/controllers/taskController.js): persist requested task " +
       "status/order changes via reorderTasks, without partially succeeding " +
       "silently on failure. Frontend " +
-      "(frontend/src/components/TaskBoard .jsx): onDragEnd must correctly " +
+      "(frontend/src/components/TaskBoard.jsx): onDragEnd must correctly " +
       "identify the dragged task, map the destination to a status, and call " +
       "the reorder endpoint with the right payload.",
     category: "state",
