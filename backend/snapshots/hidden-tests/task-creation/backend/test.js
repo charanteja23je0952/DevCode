@@ -300,17 +300,13 @@ async function run() {
       );
     }
   } finally {
-    if (createdTaskIds.length) {
-      await taskModel.deleteMany({
-        _id: { $in: createdTaskIds },
-      });
-    }
+      for (const id of createdTaskIds) {
+        await taskModel.findByIdAndDelete(id);
+      }
 
-    if (createdUserIds.length) {
-      await userModel.deleteMany({
-        _id: { $in: createdUserIds },
-      });
-    }
+      for (const id of createdUserIds) {
+        await userModel.findByIdAndDelete(id);
+      }
   }
 
   const failed = results.filter((result) => !result.pass);
