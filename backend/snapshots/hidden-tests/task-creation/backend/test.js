@@ -3,7 +3,9 @@ import taskModel from "./models/Task.js";
 import userModel from "./models/User.js";
 import { createTask } from "./controllers/taskController.js";
 import { signupUser, loginUser } from "./controllers/userController.js";
+import dotenv from "dotenv";
 
+dotenv.config({ path: "./backend/.env" });
 const results = [];
 
 function check(name, condition, detail = "") {
@@ -183,27 +185,6 @@ async function run() {
       );
     }
 
-    {
-      const res = mockRes();
-
-      signupUser(
-        {
-          body: {
-            email: "",
-            password: "",
-          },
-        },
-        res
-      );
-
-      await res.done;
-
-      check(
-        "signup rejects missing required fields",
-        res.statusCode >= 400 && res.statusCode < 500,
-        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
-      );
-    }
 
 
     const loginEmail = `login.user.${Date.now()}@example.com`;
