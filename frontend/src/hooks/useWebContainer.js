@@ -31,8 +31,22 @@ export function useWebContainer(questionIdOrTree) {
   const serverReadyListenerRef = useRef(null);
   const isQuestionId = typeof questionIdOrTree === 'string';
 
+  const cleanLog = (chunk) => {
+    return chunk
+    .replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '')
+    .replace(/\x1B[@-_]/g, '')
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+    .replace(/\r/g, '')
+    .replace(/\d+ packages? are looking for funding\s*/g, '')
+    .replace(/run `npm fund` for details\s*/g, '')
+    .replace(/added \d+ packages? in [^\n]*\n?/g, '');
+  };
+
   const addLog = (chunk) => {
-    logsRef.current += chunk;
+    const cleaned = cleanLog(chunk);
+    if (!cleaned) return;
+
+    logsRef.current += cleaned;
     setLogs(logsRef.current);
   };
 
@@ -57,7 +71,7 @@ export function useWebContainer(questionIdOrTree) {
     checkCancellation(generation);
     setStepStatus(stepId, 'in-progress', `${label}: Installing...`);
     try {
-      const proc = await instance.spawn('npm', ['--prefix', dir, 'install']);
+      const proc = await instance.spawn('npm', ['--prefix', dir, 'install', '--no-progress']);
 
       const reader = proc.output.getReader();
 
@@ -217,11 +231,8 @@ export function useWebContainer(questionIdOrTree) {
 
   const getTreeAndOverlayPaths = async () => {
     if (isQuestionId) {
-      addLog('Fetching snapshot from backend...\n');
       const response = await getQuestionSnapshot(questionIdOrTree);
       const { tree, overlayPaths } = response.data.data;
-      addLog(`Found ${overlayPaths.length} overlay file(s): ${overlayPaths.join(', ')}\n`);
-      addLog('Snapshot fetched successfully\n');
       return { tree, overlayPaths };
     } else {
       const { tree, overlayPaths } = questionIdOrTree;
@@ -264,7 +275,6 @@ export function useWebContainer(questionIdOrTree) {
       checkCancellation(generation);
       setOverlayFiles(overlayPaths);
 
-      addLog('Booting WebContainer...\n');
       instance = await WebContainer.boot();
       if (!isCurrentGeneration(generation)) {
         await instance.teardown();
@@ -286,11 +296,9 @@ export function useWebContainer(questionIdOrTree) {
       instance.on('server-ready', handleServerReady);
       serverReadyListenerRef.current = handleServerReady;
 
-      addLog('Mounting files...\n');
       await instance.mount(tree);
       checkCancellation(generation);
       setStepStatus('mount', 'success', 'Files mounted');
-      addLog('Files mounted successfully\n');
       setWebcontainer(instance);
       webcontainerRef.current = instance;
 
@@ -335,7 +343,6 @@ export function useWebContainer(questionIdOrTree) {
         return proc;
       };
 
-      addLog('Starting backend server...\n');
       await startBackend();
 
       const restartBackend = async () => {
@@ -397,7 +404,6 @@ export function useWebContainer(questionIdOrTree) {
       );
 
       checkCancellation(generation);
-      addLog('Starting frontend dev server...\n');
       setStepStatus('frontendStart', 'in-progress', 'Frontend: Starting...');
       const frontendProc = await instance.spawn('npm', ['--prefix', 'frontend', 'run', 'dev']);
       frontendProcRef.current = frontendProc;
@@ -446,7 +452,6 @@ export function useWebContainer(questionIdOrTree) {
 
   const cleanup = useCallback(async () => {
     try {
-      addLog('Cleaning up WebContainer...\n');
 
       generationRef.current += 1;
 
