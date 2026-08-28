@@ -3,7 +3,7 @@ import { EMOJIS } from '../constants/emojis';
 
 export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }) {
   const [files, setFiles] = useState([]);
-  const [expandedDirs, setExpandedDirs] = useState(new Set(['/backend', '/frontend']));
+  const [expandedDirs, setExpandedDirs] = useState(new Set());
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,17 +28,18 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
 
   const buildFileTree = async (dirPath) => {
     const entries = await webcontainer.fs.readdir(dirPath, { withFileTypes: true });
-    const result = [];
+    const directories = [];
+    const files = [];
 
     for (const entry of entries) {
-      if(entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'build') {
+      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'build') {
         continue;
       }
       const fullPath = dirPath === '/' ? `/${entry.name}` : `${dirPath}/${entry.name}`;
 
       if (entry.isDirectory()) {
         const children = await buildFileTree(fullPath);
-        result.push({
+        directories.push({
           name: entry.name,
           path: fullPath,
           type: 'directory',
@@ -46,7 +47,7 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
           isExpanded: expandedDirs.has(fullPath),
         });
       } else {
-        result.push({
+        files.push({
           name: entry.name,
           path: fullPath,
           type: 'file',
@@ -55,7 +56,10 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
       }
     }
 
-    return result;
+    directories.sort((a, b) => a.name.localeCompare(b.name));
+    files.sort((a, b) => a.name.localeCompare(b.name));
+
+    return [...directories, ...files];
   };
 
   const toggleDirectory = (path) => {
@@ -69,7 +73,7 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
       return newSet;
     });
 
-  const updateExpansion = (items) => {
+    const updateExpansion = (items) => {
       return items.map(item => {
         if (item.type === 'directory' && item.path === path) {
           return { ...item, isExpanded: !item.isExpanded };

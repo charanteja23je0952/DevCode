@@ -24,6 +24,8 @@ const questions = [
   {
     title: "Task CRUD Operations",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Implement the task CRUD controller operations in " +
       "backend/controllers/taskController.js. createTask must create a task " +
       "from req.body and return it. deleteTask must delete the task " +
@@ -41,6 +43,8 @@ const questions = [
   {
     title: "Authentication Middleware",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Implement the authentication middleware in " +
       "backend/middlewares/authMiddleware.js. It must read the JWT from the " +
       "authentication cookie set by generateToken.js, reject requests " +
@@ -58,6 +62,8 @@ const questions = [
   {
     title: "Task Reordering (Backend)",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Implement the task reordering functionality in " +
       "backend/controllers/taskController.js. Read the task updates from " +
       "req.body.tasks (each item has a task id and destination status), " +
@@ -75,6 +81,8 @@ const questions = [
   {
     title: "TaskBoard Search & Sorting",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Repair the filtering, sorting, and column-grouping logic in " +
       "frontend/src/components/TaskBoard.jsx. Search must match the task " +
       "title or description case-insensitively, including the empty-search " +
@@ -94,6 +102,8 @@ const questions = [
   {
     title: "Drag-and-Drop Handler",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Restore the onDragEnd implementation in " +
       "frontend/src/utils/dragDropLogic.js. The backend is already " +
       "functional — keep this frontend-only. It must ignore invalid drops, " +
@@ -111,6 +121,8 @@ const questions = [
   {
     title: "React Query Helper",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Complete the React Query helper in frontend/src/helper.js. The " +
       "harness UI is already functional — keep this helper-only. " +
       "Implement useGetTasks to fetch tasks with proper loading/error " +
@@ -127,6 +139,8 @@ const questions = [
   {
     title: "Task Creation, User Signup & Login",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Repair three existing backend flows. In backend/controllers/taskController.js, " +
       "implement createTask using the existing Mongoose model, persist the " +
       "request body, return the created task with HTTP 201, and return an " +
@@ -150,6 +164,8 @@ const questions = [
   {
     title: "Task Drag & Reorder (Full Stack)",
     reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
       "Complete the end-to-end drag-and-reorder flow. Backend " +
       "(backend/controllers/taskController.js): persist requested task " +
       "status/order changes via reorderTasks, without partially succeeding " +

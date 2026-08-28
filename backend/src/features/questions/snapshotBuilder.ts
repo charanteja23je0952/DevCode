@@ -8,7 +8,7 @@ const SNAPSHOTS_ROOT = path.join(process.cwd(), "snapshots");
 
 const SKIP_DIRS = new Set(["node_modules", "images", ".git"]);
 const SKIP_EXTS = new Set([".png", ".jpg", ".jpeg", ".ico"]);
-const SKIP_FILES = new Set(["challenge.md", ".DS_Store"]);
+const SKIP_FILES = new Set([".DS_Store"]);
 
 function buildFileSystemTree(dirPath: string): FSTree {
   const tree: FSTree = {};

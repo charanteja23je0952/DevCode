@@ -39,7 +39,8 @@ export function useWebContainer(questionIdOrTree) {
     .replace(/\r/g, '')
     .replace(/\d+ packages? are looking for funding\s*/g, '')
     .replace(/run `npm fund` for details\s*/g, '')
-    .replace(/added \d+ packages? in [^\n]*\n?/g, '');
+    .replace(/added \d+ packages? in [^\n]*\n?/g, '')
+    .replace(/\n{2,}/g, '\n');
   };
 
   const addLog = (chunk) => {

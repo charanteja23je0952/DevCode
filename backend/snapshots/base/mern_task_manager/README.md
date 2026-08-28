@@ -1,163 +1,157 @@
-# MERN Task Manager App
+# MERN Task Manager
 
-![MERN Stack](https://img.shields.io/badge/MERN-Stack-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+A full-stack task management application built with React, Node.js, Express, and Mongoose-style models.
 
-A functional task management application built using the MERN (MongoDB, Express, React, Node.js) stack. The app allows users to manage tasks with features like user authentication (JWT), task creation, task arrangement using drag-and-drop, and much more.
+Users can sign up, log in, manage tasks, search and sort them, and move tasks between columns using drag-and-drop.
 
-![Task Manager App home](/images/home.png)
-![Task Manager App signup](/images/singup.png)
-![Task Manager App login](/images/login.png)
-![Task Manager App taskdetail](/images/taskdetails.png)
-![Task Manager App edittask](/images/taskedit.png)
+## How the App Works
 
-## 🌟 Features
+The application has two main parts:
 
-- **User Authentication**: Secure login, registration, and logout using JWT (HttpOnly cookies) for protection against XSS attacks.
-- **Task Management**: Users can create, search, update, and delete tasks.
-- **Drag-and-Drop**: Easily manage tasks between "To Do", "In Progress", and "Done" columns.
-- **Protected Routes**: Only authenticated users can access protected pages, and already logged-in users cannot access login or signup pages.
-- **Optimistic Updates**: React Query is used for server-side caching and optimistic UI updates.
-- **Responsive UI**: Developed with React Beautiful DnD and customized UI components.
+- **Frontend** — React application responsible for the UI, user interaction, and client-side state.
+- **Backend** — Express API responsible for authentication and task operations.
 
-## 🛠️ Technologies Used
+The frontend communicates with the backend through HTTP requests.
 
-### Frontend:
 
-- **React** (v18.3.1)
-- **Redux Toolkit** for global state management
-- **React Router** for routing
-- **React Query** for handling server data and caching
-- **React Hook Form** (with Zod validation)
-- **React Beautiful DnD** for drag-and-drop interactions
-- **Axios** for HTTP requests
-- **Flowbite-React** for UI components
-- **React Toastify** for user notifications
+## Authentication
 
-### Backend:
+The application supports:
 
-- **Node.js** (v18.x)
-- **Express.js** (v4.19.2) for the API
-- **MongoDB** with **Mongoose** for the database
-- **JWT** for user authentication
-- **Bcrypt.js** for password hashing
-- **Cookie-Parser** for handling JWT cookies
+- Sign up
+- Log in
+- Log out
 
-## 🚀 Live Demo
+Authentication uses JWTs stored in HTTP-only cookies.
 
-Check out the live deployed version [here](https://taskmanger-4sy5.onrender.com).
+Protected routes require an authenticated user.
 
-## 🏁 Getting Started Locally
+## Task Management
 
-To get this project running on your local machine, follow these steps:
+Tasks contain:
 
-### Prerequisites
+- Title
+- Description
+- Status (To Do, In Progress, Done)
+- Priority (Low, Medium, High)
+- Due date
+- Assigned user
 
-- **Node.js** (v18.x or later)
-- **MongoDB** (local installation or MongoDB Atlas)
+Tasks can be:
 
-### Installation
+- Created
+- Viewed
+- Edited
+- Deleted
+- Searched
+- Sorted
+- Reordered
 
-1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/razak571/mern_task_manager_app.git
-   ```
+Dragging a task to another column changes its status through the application's task flow.
 
-2. Navigate into the project directory:
-   ```bash
-   cd mern_task_manager_app
-   ```
+## Project Structure
 
-### Backend Setup
+### Backend
 
-1. Navigate to the backend folder:
+backend/
+├── controllers/     # Request handlers and application logic
+├── models/          # User and Task data models
+├── routes/          # API route definitions
+├── middlewares/     # Authentication and shared middleware
+├── db/              # Database / data-store logic
+├── utils/           # Shared backend utilities
+├── server.js        # Main application entry point
+├── .env             # Environment variables
+└── package.json     # Backend dependencies
 
-   ```bash
-   cd backend
-   ```
+### Frontend
 
-2. Install backend dependencies:
+frontend/
+├── src/
+│   ├── assets/          # Static assets (images, etc.)
+│   ├── components/      # Reusable UI components
+│   ├── pages/           # Application pages
+│   ├── redux/           # Global application state
+│   ├── utils/           # Task and drag-and-drop logic
+│   ├── helper.js        # React Query helpers
+│   ├── App.jsx          # Application routing
+│   ├── main.jsx         # Frontend entry point
+│   ├── App.css          # Application styles
+│   └── index.css        # Global styles
+├── public/              # Static public assets
+├── .env                 # Environment variables
+├── package.json         # Frontend dependencies
+├── vite.config.js       # Vite configuration
+└── tailwind.config.js   # Tailwind CSS configuration
 
-   ```bash
-   npm install
-   ```
+## Frontend State
 
-3. Create a `.env` file in the `backend` folder and set the following environment variables:
+The frontend uses **Redux Toolkit** for application state such as authentication and tasks.
 
-   ```env
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   ```
+Some parts of the application use **React Query** for server-side data fetching and mutations.
 
-4. Start the backend server:
-   ```bash
-   npm start
-   ```
+When tracing a feature, check how the UI connects to its API and state-management layer.
 
-The backend server will start at `http://localhost:5000`.
+## Backend Flow
 
-### Frontend Setup
+A typical request follows this path:
 
-1. Navigate to the frontend folder:
+Route
+  ↓
+Middleware
+  ↓
+Controller
+  ↓
+Model / Data Store
+  ↓
+Response
 
-   ```bash
-   cd ../frontend
-   ```
+For authentication:
 
-2. Install frontend dependencies:
+Login / Signup
+      ↓
+Auth route
+      ↓
+Auth controller
+      ↓
+Auth service
+      ↓
+User model
+      ↓
+JWT cookies
 
-   ```bash
-   npm install
-   ```
+## Development Environment
 
-3. Create a `.env` file in the `frontend` folder and add the backend URL:
+This repository runs inside the **WebContainer environment** used by DevCode.
 
-   ```env
-   REACT_APP_API_URL=http://localhost:5000
-   ```
+The environment starts both the backend and frontend development servers.
 
-4. Start the frontend development server:
-   ```bash
-   npm start
-   ```
+When running inside WebContainer, the project uses its in-memory data-store behavior, so a separate MongoDB server is not required while solving a challenge.
 
-The app will be running at `http://localhost:3000`.
+## Solving a Challenge
 
-## 🧪 Testing Locally
+1. Read this README to understand the overall project.
+2. Read `challenge.md` to understand the specific challenge.
+3. Locate the files mentioned by the challenge.
+4. Trace how data flows through the relevant components, routes, controllers, helpers, or state.
+5. Make the smallest change necessary to restore the required behavior.
+6. Run the provided tests.
 
-Once both servers (backend and frontend) are running, you can test the application by navigating to `http://localhost:3000` in your browser.
+The repository contains working code outside the challenge area, so avoid changing unrelated functionality.
 
-## 📜 Available Scripts
+## Important
 
-In the project directories, you can run:
+Challenges are designed around the existing application architecture.
 
-- `npm start`: Starts the development server.
-- `npm build`: Builds the app for production.
+When solving a challenge, preserve:
 
-## 🚀 Future Enhancements
+- API contracts
+- Route structure
+- Authentication flow
+- State management
+- Component structure
+- Data models
+- Unrelated application behavior
 
-- **User Avatar**: Implement profile avatars for users.
-- **Notifications**: Add real-time notifications for task updates.
-- **Improved UI**: Align UI elements like search button and filters with a more polished design.
-
-## 🐛 Known Issues
-
-- Minor alignment issues with the search button and add task button.
-- A small bug with cookies in production when using JWT (will be fixed soon).
-
-## 🤝 Contributing
-
-Feel free to fork the repository, submit issues, or make pull requests. Any contributions are welcome!
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**Razak** - [GitHub](https://github.com/razak571)
-
----
-
-⭐️ If you found this project helpful, please give it a star on GitHub! ⭐️
+Focus on understanding the existing code before rewriting it.
