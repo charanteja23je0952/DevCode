@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/userModel.js';
 import type { UserDocument } from '../models/userModel.js';
 import bcrypt from 'bcrypt';
@@ -55,6 +56,7 @@ const signup = async (email: string, password: string): Promise<authResponce> =>
 const login = async (email: string, password: string): Promise<authResponce> => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) throw new appError('Invalid email or password', 401);
+    if (!user.password) throw new appError('Invalid email or password', 401);
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new appError('Invalid email or password', 401);
     const accessToken = createAccessToken(user._id.toString());
@@ -82,4 +84,25 @@ const refresh = async (refreshToken: string): Promise<{ accessToken: string; use
     };
 };
 
-export { signup, login, refresh };
+const guest = async (): Promise<authResponce> => {
+    const email = `guest-${crypto.randomUUID()}@devcode.local`;
+
+    const randomPassword = crypto.randomBytes(32).toString('hex');
+
+    const user = await User.create({
+        email,
+        password: randomPassword,
+        isGuest: true
+    });
+
+    const accessToken = createAccessToken(user._id.toString());
+    const refreshToken = createRefreshToken(user._id.toString());
+
+    return {
+        user,
+        accessToken,
+        refreshToken
+    };
+};
+
+export { signup, login, refresh, guest };

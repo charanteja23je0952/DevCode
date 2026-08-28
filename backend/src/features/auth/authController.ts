@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import catchAsync from '../../utils/catchAsync.js';
-import { signup, login, refresh } from './authService.js';
+import { signup, login, refresh, guest } from './authService.js';
 import { ok } from '../../utils/response.js';
 import appError from '../../utils/appError.js';
 import type { SignupBody, LoginBody } from './authSchema.js';
@@ -67,6 +67,15 @@ export const refresh_post = catchAsync(async (req: Request, res: Response) => {
     const result = await refresh(refreshToken);
     res.cookie('accessToken', result.accessToken, cookieOptions(ACCESS_TOKEN_MAX_AGE));
     ok(res, "Token refreshed", {
+        id: result.user._id
+    });
+});
+
+export const guest_post = catchAsync(async (req: Request, res: Response) => {
+    const result = await guest();
+    res.cookie('accessToken', result.accessToken, cookieOptions(ACCESS_TOKEN_MAX_AGE));
+    res.cookie('refreshToken', result.refreshToken, cookieOptions(REFRESH_TOKEN_MAX_AGE));
+    ok(res, "Guest login successful", {
         id: result.user._id
     });
 });

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { login as loginApi } from '../api/auth';
+import { login as loginApi, guest as guestApi } from '../api/auth';
 import { loginStart, loginSuccess, loginFailure, setInitialized } from '../store/authSlice';
 
 export default function Login() {
@@ -31,6 +31,19 @@ export default function Login() {
       navigate('/questions');
     } catch (err) {
       dispatch(loginFailure(err.response?.data?.message || 'Login failed. Please try again.'));
+    }
+  };
+
+  const handleGuestLogin = async () => {
+    dispatch(loginStart());
+
+    try {
+      const response = await guestApi();
+      dispatch(loginSuccess({ id: response.data.data.id }));
+      dispatch(setInitialized());
+      navigate('/questions');
+    } catch (err) {
+      dispatch(loginFailure(err.response?.data?.message || 'Guest login failed. Please try again.'));
     }
   };
 
@@ -86,6 +99,17 @@ export default function Login() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={handleGuestLogin}
+            disabled={loading}
+            className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Creating guest session...' : 'Continue as Guest'}
+          </button>
+        </div>
 
         <p className="mt-4 text-center text-app-muted">
           Don't have an account?{' '}

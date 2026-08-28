@@ -3,7 +3,8 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 export interface IUser {
     email: string;
-    password: string;
+    password?: string;
+    isGuest: boolean;
 }
 export type UserDocument = HydratedDocument<IUser>;
 const userSchema = new mongoose.Schema<IUser>(
@@ -13,21 +14,29 @@ const userSchema = new mongoose.Schema<IUser>(
             required: [true, "Please enter an email"],
             unique: true,
             lowercase: true,
-            validate: [
-                validator.isEmail,
-                "Please enter a valid email"
-            ]
+            validate: {
+                validator: function(this: any, v: string) {
+                    if (this.isGuest && v.endsWith('@devcode.local')) {
+                        return true;
+                    }
+                    return validator.isEmail(v);
+                },
+                message: "Please enter a valid email"
+            }
         },
         password: {
             type: String,
-            required: [
-                true,
-                "Please enter a password"
-            ],
+            required: function(this: any) {
+                return !this.isGuest;
+            },
             minlength: [
                 6,
                 "Minimum password length is 6 characters"
             ]
+        },
+        isGuest: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -36,6 +45,9 @@ const userSchema = new mongoose.Schema<IUser>(
 );
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) {
+        return;
+    }
+    if (!this.password) {
         return;
     }
     const salt = await bcrypt.genSalt();

@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { signup_post, login_post, logout, refresh_post } from './authController.js';
+import { signup_post, login_post, logout, refresh_post, guest_post } from './authController.js';
 import validate from '../../middleware/validate.js';
 import { signupSchema, loginSchema } from './authSchema.js';
 import rateLimit from 'express-rate-limit';
@@ -36,6 +36,12 @@ router.post(
 router.post(
     '/refresh',
     refresh_post
+);
+
+router.post(
+    '/guest',
+    authLimiter,
+    guest_post
 );
 
 export default router;
