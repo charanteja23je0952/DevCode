@@ -115,8 +115,6 @@ Auth route
       ↓
 Auth controller
       ↓
-Auth service
-      ↓
 User model
       ↓
 JWT cookies

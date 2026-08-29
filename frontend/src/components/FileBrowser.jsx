@@ -165,7 +165,7 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
   if (loading) {
     return (
       <div className="p-4">
-        <div className="text-center text-gray-500">Loading file system...</div>
+        <div className="text-center text-app-muted">Loading file system...</div>
       </div>
     );
   }

@@ -123,45 +123,66 @@ export default function SubmissionView() {
   };
 
   const renderFileTree = (tree, level = 0, parentPath = '') => {
-    return Object.entries(tree).map(([name, item]) => {
+    const directories = [];
+    const files = [];
+
+    Object.entries(tree).forEach(([name, item]) => {
+      if (item.directory) {
+        directories.push([name, item]);
+      } else if (item.file) {
+        files.push([name, item]);
+      }
+    });
+
+    directories.sort(([a], [b]) => a.localeCompare(b));
+    files.sort(([a], [b]) => a.localeCompare(b));
+
+    const renderDirectory = ([name, item]) => {
       const currentPath = parentPath ? `${parentPath}/${name}` : name;
       const paddingLeft = `${level * 16 + 8}px`;
       const isExpanded = expandedDirs.has(currentPath);
-      
-      if (item.directory) {
-        return (
-          <div key={currentPath}>
-            <div
-              className="flex items-center py-1 px-2 cursor-pointer hover:bg-app-hover overflow-hidden"
-              style={{ paddingLeft }}
-              onClick={() => toggleDirectory(currentPath)}
-            >
-              <span className="mr-2 flex-shrink-0 text-sm text-indigo-400">
-                {isExpanded ? EMOJIS.FOLDER_OPEN : EMOJIS.FOLDER_CLOSED}
-              </span>
-              <span className="text-sm text-app-text truncate">{name}</span>
-            </div>
-            {isExpanded && item.directory && renderFileTree(item.directory, level + 1, currentPath)}
-          </div>
-        );
-      } else if (item.file) {
-        const fileData = { name, path: currentPath, contents: item.file.contents };
-        return (
+
+      return (
+        <div key={currentPath}>
           <div
-            key={currentPath}
-            className={`flex items-center py-1 px-2 cursor-pointer hover:bg-app-hover overflow-hidden ${
-              selectedFile?.path === currentPath ? 'bg-app-selected' : ''
-            }`}
+            className="flex items-center py-1 px-2 cursor-pointer hover:bg-app-hover overflow-hidden"
             style={{ paddingLeft }}
-            onClick={() => handleFileSelect(fileData)}
+            onClick={() => toggleDirectory(currentPath)}
           >
-            <span className="mr-2 flex-shrink-0 text-sm">{getFileIcon(name)}</span>
+            <span className="mr-2 flex-shrink-0 text-sm text-blue-400">
+              {isExpanded ? EMOJIS.FOLDER_OPEN : EMOJIS.FOLDER_CLOSED}
+            </span>
             <span className="text-sm text-app-text truncate">{name}</span>
           </div>
-        );
-      }
-      return null;
-    });
+          {isExpanded && item.directory && renderFileTree(item.directory, level + 1, currentPath)}
+        </div>
+      );
+    };
+
+    const renderFile = ([name, item]) => {
+      const currentPath = parentPath ? `${parentPath}/${name}` : name;
+      const paddingLeft = `${level * 16 + 8}px`;
+      const fileData = { name, path: currentPath, contents: item.file.contents };
+
+      return (
+        <div
+          key={currentPath}
+          className={`flex items-center py-1 px-2 cursor-pointer hover:bg-app-hover overflow-hidden ${
+            selectedFile?.path === currentPath ? 'bg-app-selected' : ''
+          }`}
+          style={{ paddingLeft }}
+          onClick={() => handleFileSelect(fileData)}
+        >
+          <span className="mr-2 flex-shrink-0 text-sm">{getFileIcon(name)}</span>
+          <span className="text-sm text-app-text truncate">{name}</span>
+        </div>
+      );
+    };
+
+    return [
+      ...directories.map(renderDirectory),
+      ...files.map(renderFile),
+    ];
   };
 
   if (loading) {
