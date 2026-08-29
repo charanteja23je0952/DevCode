@@ -7,13 +7,6 @@ export default function Footer() {
             <p className="text-lg font-semibold">DevCode</p>
             <p className="text-app-muted text-sm">Debug Preparation Platform</p>
           </div>
-
-          <div className="flex flex-wrap justify-center gap-6 text-sm">
-            <a href="#" className="text-app-muted hover:text-app-text transition-colors">About</a>
-            <a href="#" className="text-app-muted hover:text-app-text transition-colors">Contact</a>
-            <a href="#" className="text-app-muted hover:text-app-text transition-colors">Privacy</a>
-            <a href="#" className="text-app-muted hover:text-app-text transition-colors">Terms</a>
-          </div>
         </div>
 
         <div className="mt-8 pt-8 border-t border-app-border text-center text-app-muted text-sm">

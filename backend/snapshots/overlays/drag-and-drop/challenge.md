@@ -10,7 +10,6 @@ The implementation must:
 - map destination columns to the task's status,
 - persist the status change through the existing API,
 - update Redux from the successful server response,
-- handle authentication failures consistently,
 - expose other request errors through the component's existing error state.
 
 Do not change unrelated task operations.

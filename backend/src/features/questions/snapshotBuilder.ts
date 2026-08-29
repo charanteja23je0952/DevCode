@@ -57,7 +57,7 @@ function applyOverlay(
       file: { contents: fs.readFileSync(fullPath, "utf-8") },
     };
 
-    if (touchedPaths) {
+    if (touchedPaths && entry.name !== "challenge.md") {
       touchedPaths.push("/" + nextRelPath.join("/"));
     }
   }

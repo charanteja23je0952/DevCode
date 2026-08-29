@@ -108,14 +108,6 @@ export default function QuestionDetail() {
             <p className="text-app-muted whitespace-pre-wrap leading-7">{question.reproSteps}</p>
           </div>
 
-          {question.repoDescription && (
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold text-app-text mb-3">Repository Description</h2>
-              <div className="ui-alert-info">
-                <p className="text-app-muted whitespace-pre-wrap">{question.repoDescription}</p>
-              </div>
-            </div>
-          )}
 
           {question.hints && question.hints.length > 0 && (
             <div className="mt-6">
