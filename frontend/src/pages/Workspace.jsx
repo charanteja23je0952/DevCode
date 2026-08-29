@@ -17,6 +17,7 @@ export default function Workspace() {
   const [submissionResult, setSubmissionResult] = useState(null);
   const [showLivePreview, setShowLivePreview] = useState(false);
   const [localTestResult, setLocalTestResult] = useState(null);
+  const [showBootNotice, setShowBootNotice] = useState(false);
   const editorRef = useRef(null);
 
   const getStepIcon = (stepStatus) => {
@@ -62,6 +63,7 @@ export default function Workspace() {
 
   const bootWebContainerWithSave = async () => {
     await forceSaveCurrentFile();
+    setShowBootNotice(true);
     await bootWebContainer();
   };
 
@@ -70,6 +72,12 @@ export default function Workspace() {
       cleanup();
     };
   }, [cleanup]);
+
+  useEffect(() => {
+    if (isEnvironmentRunning() || error) {
+      setShowBootNotice(false);
+    }
+  }, [status, error]);
 
   const handleRun = async () => {
     if (!webcontainer) {
@@ -180,7 +188,7 @@ export default function Workspace() {
               disabled={booting || webcontainer}
               className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {booting ? 'Booting...' : isEnvironmentRunning() ? 'Environment Running' : webcontainer ? 'Environment Starting...' : 'Boot Environment'}
+              {booting ? 'Booting...' : isEnvironmentRunning() ? 'Environment Ready' : webcontainer ? 'Environment Starting...' : 'Boot Environment'}
             </button>
             {!isReadOnly && (
               <>
@@ -282,13 +290,34 @@ export default function Workspace() {
       />
 
       {error && (
-        <div className="fixed bottom-4 right-4 bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg shadow-lg max-w-md">
+        <div className="fixed bottom-4 right-4 bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg shadow-lg max-w-md z-50">
           <strong>Error:</strong> {error}
         </div>
       )}
 
+      {showBootNotice && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
+          <div className="bg-gray-800 rounded-xl shadow-lg p-8 max-w-md mx-4">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold text-app-text">Environment Booting</h2>
+              <button
+                onClick={() => setShowBootNotice(false)}
+                className="text-app-muted hover:text-app-text text-2xl leading-none"
+              >
+                {EMOJIS.CLOSE}
+              </button>
+            </div>
+            <p className="text-app-text mb-6">
+              Environment is booting...
+              You can start reading the README and challenge.md while the environment loads.
+              Run your code and tests once the environment is ready.
+            </p>
+          </div>
+        </div>
+      )}
+
       {localTestResult && (
-        <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg ${
+        <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
           localTestResult.passed 
             ? 'bg-green-900/20 border-green-500/50 text-green-400'
             : 'bg-red-900/20 border-red-500/50 text-red-400'
@@ -315,7 +344,7 @@ export default function Workspace() {
       )}
 
       {submissionResult && (
-        <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg ${
+        <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
           submissionResult.success 
             ? (submissionResult.passed ? 'bg-green-900/20 border-green-500/50 text-green-400' : 'bg-yellow-900/20 border-yellow-500/50 text-yellow-400')
               : 'bg-red-900/20 border-red-500/50 text-red-400'
