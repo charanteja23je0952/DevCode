@@ -60,10 +60,10 @@ export default function LivePreview({
               <span className="text-xs text-app-muted ml-2">• {getLoadingMessage()}</span>
             )}
             {loadingState === 'error' && (
-              <span className="text-xs text-red-400 ml-2">• Error</span>
+              <span className="text-xs text-app-error ml-2">• Error</span>
             )}
             {loadingState === 'ready' && (
-              <span className="text-xs text-green-400 ml-2">• Ready</span>
+              <span className="text-xs text-app-success ml-2">• Ready</span>
             )}
           </div>
           
@@ -109,18 +109,18 @@ export default function LivePreview({
               {loadingState === 'error' ? (
                 <div className="text-center p-8">
                   <div className="text-6xl mb-4">{EMOJIS.ERROR}</div>
-                  <h3 className="text-xl font-semibold text-red-400 mb-2">Preview Failed</h3>
+                  <h3 className="text-xl font-semibold text-app-error mb-2">Preview Failed</h3>
                   <p className="text-app-muted mb-4 max-w-md">{error || 'An error occurred while starting the preview'}</p>
                   <button
                     onClick={handleRefresh}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="ui-button-primary"
                   >
                     Retry
                   </button>
                 </div>
               ) : (
                 <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mb-4"></div>
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-app-border border-t-app-accent mb-4"></div>
                   <p className="text-app-muted">{getLoadingMessage()}</p>
                   
                   {/* Progress indicators */}

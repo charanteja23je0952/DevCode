@@ -158,7 +158,7 @@ export default function Workspace() {
           <div className="flex items-center space-x-4">
             <Link
               to={`/questions/${id}`}
-              className="inline-flex items-center text-blue-400 hover:text-blue-300"
+              className="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -172,21 +172,21 @@ export default function Workspace() {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowTerminal(!showTerminal)}
-              className="px-3 py-1 bg-app-hover text-app-text rounded hover:bg-app-selected transition-colors text-sm"
+              className="ui-button-ghost text-sm px-3 py-1"
             >
               {showTerminal ? 'Hide Terminal' : 'Show Terminal'}
             </button>
             <button
               onClick={() => setShowLivePreview(true)}
               disabled={!webcontainer && !booting}
-              className="px-3 py-1 bg-app-hover text-app-text rounded hover:bg-app-selected transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ui-button-ghost text-sm px-3 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {EMOJIS.PREVIEW} Preview
             </button>
             <button
               onClick={bootWebContainerWithSave}
               disabled={booting || webcontainer}
-              className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ui-button-primary"
             >
               {booting ? 'Booting...' : isEnvironmentRunning() ? 'Environment Ready' : webcontainer ? 'Environment Starting...' : 'Boot Environment'}
             </button>
@@ -195,14 +195,14 @@ export default function Workspace() {
                 <button
                   onClick={handleRun}
                   disabled={testRunning || !webcontainer}
-                  className="bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ui-button-warning"
                 >
                   {testRunning ? 'Running...' : 'Run'}
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={submitting || testRunning || !webcontainer}
-                  className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ui-button-success"
                 >
                   {submitting ? 'Submitting...' : testRunning ? 'Running Tests...' : 'Submit Solution'}
                 </button>
@@ -290,27 +290,25 @@ export default function Workspace() {
       />
 
       {error && (
-        <div className="fixed bottom-4 right-4 bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg shadow-lg max-w-md z-50">
+        <div className="ui-alert-error fixed bottom-4 right-4 shadow-lg max-w-md z-50">
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {showBootNotice && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
-          <div className="bg-gray-800 rounded-xl shadow-lg p-8 max-w-md mx-4">
+        <div className="ui-modal-backdrop z-40">
+          <div className="ui-panel w-full max-w-md p-6">
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold text-app-text">Environment Booting</h2>
               <button
                 onClick={() => setShowBootNotice(false)}
                 className="text-app-muted hover:text-app-text text-2xl leading-none"
               >
-                {EMOJIS.CLOSE}
+                ×
               </button>
             </div>
-            <p className="text-app-text mb-6">
-              Environment is booting...
-              You can start reading the README and challenge.md while the environment loads.
-              Run your code and tests once the environment is ready.
+            <p className="text-app-muted leading-6">
+              The environment is booting. You can read <span className="text-app-text font-medium">README.md</span> and <span className="text-app-text font-medium">challenge.md</span> while it loads. Run your code and tests once the environment is ready.
             </p>
           </div>
         </div>
@@ -319,8 +317,8 @@ export default function Workspace() {
       {localTestResult && (
         <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
           localTestResult.passed 
-            ? 'bg-green-900/20 border-green-500/50 text-green-400'
-            : 'bg-red-900/20 border-red-500/50 text-red-400'
+            ? 'bg-green-500/10 border-green-500/30 text-app-success'
+            : 'bg-red-500/10 border-red-500/30 text-app-error'
         }`}>
           <strong>
             {localTestResult.passed 
@@ -329,14 +327,14 @@ export default function Workspace() {
             }
           </strong>
           {localTestResult.output && (
-            <div className="mt-2 bg-app-panel border border-app-border rounded p-2">
+            <div className="mt-2 ui-panel p-2">
               <p className="text-xs font-medium text-app-text mb-1">Test Output:</p>
               <pre className="text-xs text-app-muted whitespace-pre-wrap">{localTestResult.output}</pre>
             </div>
           )}
           <button
             onClick={() => setLocalTestResult(null)}
-            className="mt-2 text-sm underline text-app-muted hover:text-app-text"
+            className="ui-button-ghost text-sm px-2 py-1"
           >
             Dismiss
           </button>
@@ -346,8 +344,8 @@ export default function Workspace() {
       {submissionResult && (
         <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
           submissionResult.success 
-            ? (submissionResult.passed ? 'bg-green-900/20 border-green-500/50 text-green-400' : 'bg-yellow-900/20 border-yellow-500/50 text-yellow-400')
-              : 'bg-red-900/20 border-red-500/50 text-red-400'
+            ? (submissionResult.passed ? 'bg-green-500/10 border-green-500/30 text-app-success' : 'bg-yellow-500/10 border-yellow-500/30 text-app-warning')
+              : 'bg-red-500/10 border-red-500/30 text-app-error'
         }`}>
           <strong>
             {submissionResult.success 
@@ -359,7 +357,7 @@ export default function Workspace() {
             <>
               <p className="mt-1 text-sm">Your solution has been submitted successfully.</p>
               {submissionResult.output && (
-                <div className="mt-2 bg-app-panel border border-app-border rounded p-2">
+                <div className="mt-2 ui-panel p-2">
                   <p className="text-xs font-medium text-app-text mb-1">Test Output:</p>
                   <pre className="text-xs text-app-muted whitespace-pre-wrap">{submissionResult.output}</pre>
                 </div>
@@ -367,7 +365,7 @@ export default function Workspace() {
               {previewUrl && (
                 <button
                   onClick={() => setShowLivePreview(true)}
-                  className="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="ui-button-primary w-full mt-3"
                 >
                   {EMOJIS.PREVIEW} View Live Preview
                 </button>
@@ -382,7 +380,7 @@ export default function Workspace() {
               setSubmissionResult(null);
               setShowLivePreview(false);
             }}
-            className="mt-2 text-sm underline text-app-muted hover:text-app-text"
+            className="ui-button-ghost text-sm px-2 py-1"
           >
             Dismiss
           </button>

@@ -1,16 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-app-bg: #0f172a;
-  --color-app-panel: #111827;
-  --color-app-editor: #1e293b;
-  --color-app-border: #334155;
+  --color-app-bg: #0a0e1a;
+  --color-app-panel: #131a2b;
+  --color-app-editor: #1a2338;
+  --color-app-border: #253045;
+  --color-app-border-focus: #3b4864;
 
   --color-app-text: #f8fafc;
   --color-app-muted: #94a3b8;
+  --color-app-placeholder: #64748b;
 
-  --color-app-hover: #1e293b;
-  --color-app-selected: #334155;
+  --color-app-hover: #1a2338;
+  --color-app-selected: #253045;
+
+  --color-app-accent: #6366f1;
+  --color-app-accent-hover: #4f46e5;
+  --color-app-accent-soft: #6366f11a;
 
   --color-app-success: #22c55e;
   --color-app-error: #ef4444;
@@ -35,38 +41,90 @@
 
 @layer components {
   .ui-panel {
-    @apply bg-app-panel border border-app-border rounded-lg;
+    @apply bg-app-panel border border-app-border rounded-lg shadow-lg shadow-black/20;
   }
 
   .ui-button {
-    @apply px-4 py-2 rounded-md transition-colors;
+    @apply px-4 py-2 rounded-md transition-colors font-medium;
   }
 
   .ui-button-primary {
-    @apply px-4 py-2 rounded-md transition-colors bg-blue-600 text-white hover:bg-blue-700;
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-app-accent text-white hover:bg-app-accent-hover disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .ui-button-secondary {
-    @apply px-4 py-2 rounded-md transition-colors bg-app-panel text-app-text border border-app-border hover:bg-app-hover;
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-transparent text-app-text border border-app-border hover:bg-app-hover hover:border-app-border-focus disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .ui-button-danger {
-    @apply px-4 py-2 rounded-md transition-colors bg-red-600 text-white hover:bg-red-700;
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .ui-button-success {
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-app-success text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .ui-button-warning {
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-app-warning text-white hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .ui-button-ghost {
+    @apply px-4 py-2 rounded-md transition-colors font-medium bg-transparent text-app-muted hover:bg-app-hover hover:text-app-text;
+  }
+
+  .ui-input {
+    @apply w-full px-3 py-2 rounded-md bg-app-editor border border-app-border text-app-text placeholder-app-placeholder outline-none transition-colors focus:border-app-accent focus:ring-1 focus:ring-app-accent;
+  }
+
+  .ui-label {
+    @apply block text-sm font-medium text-app-muted mb-1.5;
   }
 
   .ui-badge {
-    @apply px-2 py-1 rounded text-sm;
+    @apply px-2 py-1 rounded text-sm font-medium;
   }
 
   .ui-badge-success {
-    @apply px-2 py-1 rounded text-sm bg-green-500/10 text-app-success;
+    @apply px-2 py-1 rounded text-sm font-medium bg-green-500/10 text-app-success;
   }
 
   .ui-badge-error {
-    @apply px-2 py-1 rounded text-sm bg-red-500/10 text-app-error;
+    @apply px-2 py-1 rounded text-sm font-medium bg-red-500/10 text-app-error;
   }
 
   .ui-badge-warning {
-    @apply px-2 py-1 rounded text-sm bg-yellow-500/10 text-app-warning;
+    @apply px-2 py-1 rounded text-sm font-medium bg-yellow-500/10 text-app-warning;
+  }
+
+  .ui-tab {
+    @apply px-4 py-2 rounded-md text-sm font-medium transition-colors text-app-muted hover:text-app-text;
+  }
+
+  .ui-tab-active {
+    @apply px-4 py-2 rounded-md text-sm font-medium transition-colors bg-app-accent text-white;
+  }
+
+  .ui-row {
+    @apply bg-app-panel border border-app-border rounded-lg p-5 hover:border-app-border-focus transition-colors cursor-pointer;
+  }
+
+  .ui-meta {
+    @apply text-sm text-app-muted;
+  }
+
+  .ui-alert-error {
+    @apply bg-red-500/10 border border-red-500/30 text-app-error rounded-md px-4 py-3;
+  }
+
+  .ui-alert-info {
+    @apply bg-app-accent-soft border border-app-accent/30 text-indigo-300 rounded-md px-4 py-3;
+  }
+
+  .ui-alert-warning {
+    @apply bg-yellow-500/10 border border-yellow-500/30 text-app-warning rounded-md px-4 py-3;
+  }
+
+  .ui-modal-backdrop {
+    @apply fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50;
   }
 }

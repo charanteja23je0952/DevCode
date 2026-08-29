@@ -9,6 +9,7 @@ export default function Login() {
     email: '',
     password: '',
   });
+  const [guestLoading, setGuestLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
@@ -35,7 +36,7 @@ export default function Login() {
   };
 
   const handleGuestLogin = async () => {
-    dispatch(loginStart());
+    setGuestLoading(true);
 
     try {
       const response = await guestApi();
@@ -44,23 +45,25 @@ export default function Login() {
       navigate('/questions');
     } catch (err) {
       dispatch(loginFailure(err.response?.data?.message || 'Guest login failed. Please try again.'));
+    } finally {
+      setGuestLoading(false);
     }
   };
 
   return (
     <div className="bg-app-bg flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-app-panel rounded-xl shadow-lg p-8">
+      <div className="max-w-md w-full ui-panel p-8">
         <h1 className="text-3xl font-bold text-app-text mb-6">Login</h1>
         
         {error && (
-          <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded mb-4">
+          <div className="ui-alert-error mb-4">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-app-text mb-1">
+            <label htmlFor="email" className="ui-label">
               Email
             </label>
             <input
@@ -70,13 +73,13 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-app-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-app-editor text-app-text"
+              className="ui-input"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-app-text mb-1">
+            <label htmlFor="password" className="ui-label">
               Password
             </label>
             <input
@@ -86,7 +89,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-app-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-app-editor text-app-text"
+              className="ui-input"
               placeholder="••••••••"
             />
           </div>
@@ -94,7 +97,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="ui-button ui-button-primary w-full"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
@@ -104,16 +107,16 @@ export default function Login() {
           <button
             type="button"
             onClick={handleGuestLogin}
-            disabled={loading}
-            className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading || guestLoading}
+            className="ui-button ui-button-secondary w-full"
           >
-            {loading ? 'Creating guest session...' : 'Continue as Guest'}
+            {guestLoading ? 'Creating guest session...' : 'Continue as Guest'}
           </button>
         </div>
 
         <p className="mt-4 text-center text-app-muted">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+          <Link to="/signup" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
             Sign up
           </Link>
         </p>

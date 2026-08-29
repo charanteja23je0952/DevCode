@@ -136,7 +136,7 @@ export default function SubmissionView() {
               style={{ paddingLeft }}
               onClick={() => toggleDirectory(currentPath)}
             >
-              <span className="mr-2 flex-shrink-0 text-sm text-blue-400">
+              <span className="mr-2 flex-shrink-0 text-sm text-indigo-400">
                 {isExpanded ? EMOJIS.FOLDER_OPEN : EMOJIS.FOLDER_CLOSED}
               </span>
               <span className="text-sm text-app-text truncate">{name}</span>
@@ -178,13 +178,13 @@ export default function SubmissionView() {
   if (error) {
     return (
       <div className="bg-app-bg flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full bg-app-panel rounded-lg shadow p-8">
-          <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded mb-4">
+        <div className="max-w-md w-full ui-panel p-8">
+          <div className="ui-alert-error mb-4">
             {error}
           </div>
           <Link
             to={`/questions/${id}`}
-            className="inline-block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            className="ui-button-primary inline-block"
           >
             Back to Question
           </Link>
@@ -205,7 +205,7 @@ export default function SubmissionView() {
           <div className="flex items-center space-x-4">
             <Link
               to={`/questions/${id}`}
-              className="inline-flex items-center text-blue-400 hover:text-blue-300"
+              className="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -219,7 +219,7 @@ export default function SubmissionView() {
               <button
                 onClick={handleRunSubmission}
                 disabled={booting}
-                className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ui-button-success"
               >
                 {booting ? 'Running...' : 'Run Submission'}
               </button>
@@ -228,14 +228,14 @@ export default function SubmissionView() {
               <>
                 <button
                   onClick={() => setShowTerminal(!showTerminal)}
-                  className="px-3 py-1 bg-app-hover text-app-text rounded hover:bg-app-selected transition-colors text-sm"
+                  className="ui-button-ghost text-sm px-3 py-1"
                 >
                   {showTerminal ? 'Hide Terminal' : 'Show Terminal'}
                 </button>
                 <button
                   onClick={handleStopPreview}
                   disabled={booting}
-                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ui-button-danger"
                 >
                   Stop Preview
                 </button>
@@ -244,7 +244,7 @@ export default function SubmissionView() {
             {!showPreview && previewUrl && (
               <button
                 onClick={() => setShowPreview(true)}
-                className="px-3 py-1 bg-app-hover text-app-text rounded hover:bg-app-selected transition-colors text-sm"
+                className="ui-button-ghost text-sm px-3 py-1"
               >
                 {EMOJIS.PREVIEW} Preview
               </button>
@@ -329,9 +329,9 @@ export default function SubmissionView() {
           
           {/* Test Output or Terminal */}
           {!showPreview && (
-            <div className="h-48 bg-app-hover border-t border-app-border p-4 flex flex-col flex-shrink-0">
+            <div className="h-48 bg-app-editor border-t border-app-border p-4 flex flex-col flex-shrink-0">
               <h3 className="font-semibold text-app-text mb-2">Test Output</h3>
-              <div className="bg-app-panel border border-app-border rounded p-3 flex-1 overflow-hidden flex flex-col">
+              <div className="ui-panel p-3 flex-1 overflow-hidden flex flex-col">
                 {submission.passed ? (
                   <div className="text-green-400 font-medium">{EMOJIS.CHECKMARK} Tests Passed</div>
                 ) : (
@@ -378,7 +378,7 @@ export default function SubmissionView() {
       />
 
       {containerError && !showPreview && (
-        <div className="fixed bottom-4 right-4 bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg shadow-lg max-w-md">
+        <div className="fixed bottom-4 right-4 ui-alert-error shadow-lg max-w-md z-50">
           <strong>Error:</strong> {containerError}
         </div>
       )}

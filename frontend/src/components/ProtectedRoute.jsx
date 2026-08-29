@@ -6,10 +6,10 @@ export default function ProtectedRoute({ children }) {
 
   if (!initialized) {
     return (
-      <div className="bg-gray-100 flex items-center justify-center py-12">
+      <div className="bg-app-bg flex items-center justify-center py-12 min-h-[50vh]">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-app-border border-t-app-accent" />
+          <p className="mt-2 ui-meta">Loading...</p>
         </div>
       </div>
     );

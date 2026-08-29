@@ -36,20 +36,14 @@ export default function Signup() {
 
   return (
     <div className="bg-app-bg flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-app-panel rounded-xl shadow-lg p-8">
+      <div className="max-w-md w-full ui-panel p-8">
         <h1 className="text-3xl font-bold text-app-text mb-6">Sign Up</h1>
-        
-        {error && (
-          <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+
+        {error && <div className="ui-alert-error mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-app-text mb-1">
-              Email
-            </label>
+            <label htmlFor="email" className="ui-label">Email</label>
             <input
               type="email"
               id="email"
@@ -57,15 +51,13 @@ export default function Signup() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-app-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-app-editor text-app-text"
+              className="ui-input"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-app-text mb-1">
-              Password
-            </label>
+            <label htmlFor="password" className="ui-label">Password</label>
             <input
               type="password"
               id="password"
@@ -74,7 +66,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               minLength="6"
-              className="w-full px-3 py-2 border border-app-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-app-editor text-app-text"
+              className="ui-input"
               placeholder="••••••••"
             />
           </div>
@@ -82,15 +74,15 @@ export default function Signup() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="ui-button-primary w-full"
           >
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-app-muted">
+        <p className="mt-4 text-center ui-meta">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+          <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
             Login
           </Link>
         </p>
