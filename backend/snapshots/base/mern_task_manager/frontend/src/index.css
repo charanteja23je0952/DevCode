@@ -5,8 +5,8 @@
 
 
 ::-webkit-scrollbar {
-    width: 3px;
-  }
+  width: 3px;
+}
   
   ::-webkit-scrollbar-track {
     background: #1c1f2b
@@ -38,15 +38,3 @@
   ::-webkit-scrollbar-thumb:horizontal:hover {
     background: linear-gradient(to right, orangered, orangered);
   }
-  
-  
-  
-  
-  
-  
-  /* Firefox (for both vertical and horizontal) */
-  /* * {
-    scrollbar-width: thin;
-    scrollbar-color: #3498db #1c1f2b;
-  } */
-  
