@@ -12,7 +12,6 @@ import Workspace from './pages/Workspace';
 import SubmissionView from './pages/SubmissionView';
 import { refresh as refreshApi } from './api/auth';
 import { loginSuccess, setInitialized } from './store/authSlice';
-import { EMOJIS } from './constants/emojis';
 
 const SLOW_CONNECTION_THRESHOLD_MS = 8000;
 
@@ -21,10 +20,6 @@ function App() {
 
   const [connectionState, setConnectionState] = useState('connecting');
   const slowTimerRef = useRef(null);
-
-  const [showStartupModal, setShowStartupModal] = useState(() => {
-    return !localStorage.getItem('devcode-startup-notice-seen');
-  });
 
   const verifySession = useCallback(async () => {
     setConnectionState('connecting');
@@ -49,13 +44,6 @@ function App() {
     verifySession();
     return () => clearTimeout(slowTimerRef.current);
   }, [verifySession]);
-
-  const dismissStartupModal = () => {
-    setShowStartupModal(false);
-    localStorage.setItem('devcode-startup-notice-seen', 'true');
-  };
-
-  const showConnectingOverlay = connectionState !== 'done';
 
   return (
     <div className="flex flex-col min-h-screen bg-app-bg text-app-text">
@@ -101,31 +89,7 @@ function App() {
       </main>
       <Footer />
 
-      {showStartupModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="ui-panel p-8 max-w-md mx-4">
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-xl font-bold text-app-text">Welcome to DevCode</h2>
-              <button
-                onClick={dismissStartupModal}
-                className="text-app-muted hover:text-app-text text-2xl leading-none"
-                aria-label="Close"
-              >
-                {EMOJIS.CLOSE}
-              </button>
-            </div>
-            <p className="text-app-text mb-6">
-              DevCode is waking up.<br />
-              The backend may take up to a minute to respond after being idle. Thanks for your patience!
-            </p>
-            <button onClick={dismissStartupModal} className="ui-button-primary w-full">
-              Got it
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showConnectingOverlay && !showStartupModal && (
+      {connectionState !== 'done' && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
           <div className="ui-panel p-8 text-center max-w-sm mx-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-app-accent mx-auto mb-4" />

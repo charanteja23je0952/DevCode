@@ -10,3 +10,5 @@ The implementation must:
 - return 404 when an delete targets a task that does not exist.
 
 Keep the existing API response shapes and route contracts intact.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

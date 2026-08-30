@@ -13,3 +13,5 @@ The implementation must:
 - preserve the existing column metadata and current component behavior.
 
 Do not change unrelated TaskBoard functionality.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

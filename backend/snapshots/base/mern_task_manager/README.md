@@ -119,6 +119,12 @@ User model
       ↓
 JWT cookies
 
+## Live Preview & Data Storage
+
+When running the application in DevCode's Live Preview, the backend uses an in-memory data store to simulate the database. Data created during the preview session, such as accounts and tasks, is temporary and is not persisted to the production database or stored elsewhere.
+
+You can use any dummy email and password to create an account in Live Preview. No real credentials are required.
+
 ## Development Environment
 
 This repository runs inside the **WebContainer environment** used by DevCode.

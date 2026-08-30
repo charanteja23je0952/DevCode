@@ -13,3 +13,5 @@ The implementation must:
 - expose other request errors through the component's existing error state.
 
 Do not change unrelated task operations.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

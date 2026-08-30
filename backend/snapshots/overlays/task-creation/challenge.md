@@ -15,3 +15,5 @@ The implementation must:
 - generate the existing JWT cookie only after successful signup or login.
 
 Keep the existing API contracts, response shapes, JWT helper, models, routes, and unrelated task operations intact.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

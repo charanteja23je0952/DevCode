@@ -11,3 +11,5 @@ The implementation must:
 - support refetch functionality for the tasks query.
 
 Do not change the harness UI or other components.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

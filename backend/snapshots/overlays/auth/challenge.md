@@ -13,3 +13,5 @@ The middleware must:
 - not allow protected requests to continue after an authentication failure.
 
 Keep the middleware as an Express middleware: (req, res, next) => { ... }.
+
+Live Preview: You can use any dummy email and password to create an account. No real credentials are required.

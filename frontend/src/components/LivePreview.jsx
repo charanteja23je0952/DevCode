@@ -19,11 +19,6 @@ export default function LivePreview({
     }
   };
 
-  const handleOpenInNewTab = () => {
-    if (previewUrl) {
-      window.open(previewUrl, '_blank');
-    }
-  };
 
   const getLoadingState = () => {
     if (error) return 'error';
@@ -75,14 +70,6 @@ export default function LivePreview({
               title="Refresh"
             >
               {EMOJIS.REFRESH}
-            </button>
-            <button
-              onClick={handleOpenInNewTab}
-              disabled={!previewUrl}
-              className="p-2 rounded-lg hover:bg-app-selected text-app-muted hover:text-app-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Open in new tab"
-            >
-              {EMOJIS.OPEN_EXTERNAL}
             </button>
             <button
               onClick={onClose}
