@@ -9,20 +9,59 @@ if (!DB_URL) {
   throw new Error("DB_URL (or MONGODB_URI) environment variable is not defined");
 }
 
-const repo = {
-  slug: "mern_task_manager",
-  description:
-    "A full-stack MERN task management app. Users register and log in " +
-    "via JWT stored in an httpOnly cookie, then manage tasks on a Trello-style " +
-    "board with three columns (To Do / In Progress / Done). Tasks can be " +
-    "created, edited, deleted, and moved between columns via drag-and-drop. " +
-    "The frontend uses React with Redux Toolkit for state management, and " +
-    "the backend is an Express + Mongoose API.",
-};
+const repos = [
+  {
+    slug: "mern_task_manager",
+    description:
+      "A full-stack MERN task management app. Users register and log in " +
+      "via JWT stored in an httpOnly cookie, then manage tasks on a Trello-style " +
+      "board with three columns (To Do / In Progress / Done). Tasks can be " +
+      "created, edited, deleted, and moved between columns via drag-and-drop. " +
+      "The frontend uses React with Redux Toolkit for state management, and " +
+      "the backend is an Express + Mongoose API.",
+  },
+  {
+    slug: "typeahead-highlight-base",
+    description:
+      "A React component that implements a typeahead search with highlight functionality. " +
+      "Users can type to filter through a list and matching text is highlighted.",
+  },
+  {
+    slug: "drag-to-select-base",
+    description:
+      "A React component that implements drag-to-select functionality on a grid of items. " +
+      "Users can drag to create a selection rectangle and select multiple items.",
+  },
+  {
+    slug: "undo-redo-base",
+    description:
+      "A React notes application that needs undo/redo functionality. " +
+      "Users can create, edit, and delete notes, with history management.",
+  },
+  {
+    slug: "meeting-scheduler-base",
+    description:
+      "A backend meeting scheduler API that manages meeting availability. " +
+      "Users can query available time slots that don't conflict with existing meetings.",
+  },
+  {
+    slug: "rate-limiter-base",
+    description:
+      "A backend rate limiter middleware that implements sliding window rate limiting. " +
+      "API endpoints are protected with configurable rate limits per client.",
+  },
+  {
+    slug: "duplicate-finder-base",
+    description:
+      "A backend user duplicate detection system. " +
+      "The API identifies potentially duplicate user records based on similarity analysis.",
+  },
+];
 
 const questions = [
   {
     title: "Task CRUD Operations",
+    order: 2,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -42,6 +81,7 @@ const questions = [
   },
   {
     title: "Authentication Middleware",
+    order: 4,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -61,6 +101,7 @@ const questions = [
   },
   {
     title: "Task Reordering (Backend)",
+    order: 8,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -80,6 +121,7 @@ const questions = [
   },
   {
     title: "TaskBoard Search & Sorting",
+    order: 6,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -101,6 +143,7 @@ const questions = [
   },
   {
     title: "Drag-and-Drop Handler",
+    order: 10,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -120,6 +163,7 @@ const questions = [
   },
   {
     title: "React Query Helper",
+    order: 11,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -138,6 +182,7 @@ const questions = [
   },
   {
     title: "Task Creation, User Signup & Login",
+    order: 13,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -163,6 +208,7 @@ const questions = [
   },
   {
     title: "Task Drag & Reorder (Full Stack)",
+    order: 14,
     reproSteps:
       "Before starting, read README.md to understand the project and " +
       "challenge.md for the specific task requirements. " +
@@ -180,17 +226,119 @@ const questions = [
     baseRepoSlug: "mern_task_manager",
     overlaySlug: "drag-reorder",
   },
+  {
+    title: "Typeahead Highlight",
+    order: 1,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Implement the missing logic in frontend/src/utils/highlightMatch.js. " +
+      "The function should split the original text into matching and non-matching segments. " +
+      "It must handle case-insensitive matching, preserve the original text casing, " +
+      "support multiple occurrences of the query, and return the original text as a single " +
+      "non-matching segment when the query is empty. Do not change the existing search or " +
+      "keyboard-navigation behavior.",
+    category: "state",
+    layer: "frontend",
+    difficulty: "easy",
+    hints: [],
+    baseRepoSlug: "typeahead-highlight-base",
+    overlaySlug: "typeahead-highlight",
+  },
+  {
+    title: "Drag to Select",
+    order: 3,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Implement the missing logic in frontend/src/utils/getSelectedItems.js. " +
+      "The function should determine which grid items intersect the current selection " +
+      "rectangle, regardless of drag direction. Preserve the existing pointer interaction " +
+      "and UI behavior.",
+    category: "interaction",
+    layer: "frontend",
+    difficulty: "medium",
+    hints: [],
+    baseRepoSlug: "drag-to-select-base",
+    overlaySlug: "drag-to-select",
+  },
+  {
+    title: "Undo / Redo",
+    order: 7,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Implement the missing logic in frontend/src/utils/historyManager.js. " +
+      "The history manager should support undo and redo, avoid recording unchanged state, " +
+      "and correctly handle a new change after an undo. Do not change the existing notes UI.",
+    category: "state",
+    layer: "frontend",
+    difficulty: "hard",
+    hints: [],
+    baseRepoSlug: "undo-redo-base",
+    overlaySlug: "undo-redo",
+  },
+  {
+    title: "Meeting Scheduler",
+    order: 5,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Restore the availability behavior in backend/src/scheduler.js. " +
+      "The API should only return meeting slots that fit within the working day and do not " +
+      "overlap existing meetings. Do not change the existing endpoint or response shape.",
+    category: "backend",
+    layer: "backend",
+    difficulty: "medium",
+    hints: [],
+    baseRepoSlug: "meeting-scheduler-base",
+    overlaySlug: "meeting-scheduler",
+  },
+  {
+    title: "Rate Limiter",
+    order: 9,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Restore the sliding-window behavior in backend/src/rateLimiter.js. " +
+      "Expired requests must stop affecting the current window, clients must be tracked " +
+      "independently, and the existing middleware response behavior must remain unchanged.",
+    category: "backend",
+    layer: "backend",
+    difficulty: "medium",
+    hints: [],
+    baseRepoSlug: "rate-limiter-base",
+    overlaySlug: "rate-limiter",
+  },
+  {
+    title: "Duplicate Finder",
+    order: 12,
+    reproSteps:
+      "Before starting, read README.md to understand the project and " +
+      "challenge.md for the specific task requirements. " +
+      "Implement the duplicate detection logic in backend/src/duplicateFinder.js. " +
+      "The endpoint should identify likely duplicate user pairs while remaining conservative " +
+      "about weak matches. Preserve the existing model, adapter, and response shape.",
+    category: "backend",
+    layer: "backend",
+    difficulty: "hard",
+    hints: [],
+    baseRepoSlug: "duplicate-finder-base",
+    overlaySlug: "duplicate-finder",
+  },
 ];
 
 async function seed() {
   await mongoose.connect(DB_URL);
   console.log("Connected to database");
 
-  await Repo.findOneAndUpdate({ slug: repo.slug }, repo, {
-    upsert: true,
-    new: true,
-  });
-  console.log("Repo seeded:", repo.slug);
+  for (const repo of repos) {
+    await Repo.findOneAndUpdate({ slug: repo.slug }, repo, {
+      upsert: true,
+      new: true,
+    });
+    console.log("Repo seeded:", repo.slug);
+  }
 
   for (const q of questions) {
     await Question.findOneAndUpdate({ overlaySlug: q.overlaySlug }, q, {

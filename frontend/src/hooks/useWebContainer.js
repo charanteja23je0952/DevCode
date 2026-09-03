@@ -294,17 +294,41 @@ export function useWebContainer(questionIdOrTree) {
         }
       };
       
-      instance.on('server-ready', handleServerReady);
-      serverReadyListenerRef.current = handleServerReady;
+      serverReadyListenerRef.current = instance.on('server-ready', handleServerReady);
 
       await instance.mount(tree);
       checkCancellation(generation);
+
+      const hasBackend = !!tree.backend;
+      const hasFrontend = !!tree.frontend;
+
       setStepStatus('mount', 'success', 'Files mounted');
       setWebcontainer(instance);
       webcontainerRef.current = instance;
 
-      await runInstall(instance, 'backend', 'backendInstall', 'Backend', generation);
-      await runInstall(instance, 'frontend', 'frontendInstall', 'Frontend', generation);
+      if (hasBackend) {
+        await runInstall(
+          instance,
+          'backend',
+          'backendInstall',
+          'Backend',
+          generation
+        );
+      } else {
+        setStepStatus('backendInstall', 'skipped', 'Backend: Not required');
+      }
+
+      if (hasFrontend) {
+        await runInstall(
+          instance,
+          'frontend',
+          'frontendInstall',
+          'Frontend',
+          generation
+        );
+      } else {
+        setStepStatus('frontendInstall', 'skipped', 'Frontend: Not required');
+      }
 
       checkCancellation(generation);
       const startBackend = async () => {
@@ -344,92 +368,133 @@ export function useWebContainer(questionIdOrTree) {
         return proc;
       };
 
-      await startBackend();
+      if (hasBackend) {
+        await startBackend();
 
-      const restartBackend = async () => {
-        if (!isCurrentGeneration(generation)) return;
+        const restartBackend = async () => {
+          if (!isCurrentGeneration(generation)) return;
 
-        if (backendRestartingRef.current) {
-          backendRestartPendingRef.current = true;
-          return;
-        }
-
-        backendRestartingRef.current = true;
-        backendRestartPendingRef.current = false;
-
-        try {
-          addLog('Backend file changed — restarting server...\n');
-          setStepStatus('backendStart', 'in-progress', 'Backend: Restarting...');
-
-          const currentProc = backendProcRef.current;
-          if (currentProc) {
-            backendProcRef.current = null;
-            try {
-              currentProc.kill();
-            } catch (err) {
-            }
-
-            try {
-              await currentProc.exit;
-            } catch (err) {
-            }
+          if (backendRestartingRef.current) {
+            backendRestartPendingRef.current = true;
+            return;
           }
 
-          checkCancellation(generation);
-          await startBackend();
-        } catch (err) {
-          if (err.message === 'WebContainer boot cancelled') return;
-          if (!isCurrentGeneration(generation)) return;
-          addLog(`Backend restart failed: ${err.message}\n`);
-          setStepStatus('backendStart', 'error', `Backend restart failed`);
-        } finally {
-          backendRestartingRef.current = false;
+          backendRestartingRef.current = true;
+          backendRestartPendingRef.current = false;
 
-          if (backendRestartPendingRef.current && isCurrentGeneration(generation)) {
-            backendRestartPendingRef.current = false;
+          try {
+            addLog('Backend file changed — restarting server...\n');
+            setStepStatus('backendStart', 'in-progress', 'Backend: Restarting...');
+
+            const currentProc = backendProcRef.current;
+
+            if (currentProc) {
+              backendProcRef.current = null;
+
+              try {
+                currentProc.kill();
+              } catch (err) {}
+
+              try {
+                await currentProc.exit;
+              } catch (err) {}
+            }
+
+            checkCancellation(generation);
+            await startBackend();
+          } catch (err) {
+            if (err.message === 'WebContainer boot cancelled') return;
+            if (!isCurrentGeneration(generation)) return;
+
+            addLog(`Backend restart failed: ${err.message}\n`);
+            setStepStatus(
+              'backendStart',
+              'error',
+              'Backend restart failed'
+            );
+          } finally {
+            backendRestartingRef.current = false;
+
+            if (
+              backendRestartPendingRef.current &&
+              isCurrentGeneration(generation)
+            ) {
+              backendRestartPendingRef.current = false;
+              clearTimeout(backendRestartTimerRef.current);
+              backendRestartTimerRef.current = setTimeout(
+                restartBackend,
+                500
+              );
+            }
+          }
+        };
+
+        backendWatcherRef.current = instance.fs.watch(
+          '/backend',
+          { recursive: true },
+          () => {
+            if (!isCurrentGeneration(generation)) return;
+
             clearTimeout(backendRestartTimerRef.current);
-            backendRestartTimerRef.current = setTimeout(restartBackend, 500);
+            backendRestartTimerRef.current = setTimeout(
+              restartBackend,
+              500
+            );
           }
-        }
-      };
+        );
+      } else {
+        setStepStatus('backendStart', 'skipped', 'Backend: Not required');
+      }
 
-      backendWatcherRef.current = instance.fs.watch(
-        '/backend',
-        { recursive: true },
-        () => {
+      if (hasFrontend) {
+        checkCancellation(generation);
+        setStepStatus(
+          'frontendStart',
+          'in-progress',
+          'Frontend: Starting...'
+        );
+
+        const frontendProc = await instance.spawn(
+          'npm',
+          ['--prefix', 'frontend', 'run', 'dev']
+        );
+
+        frontendProcRef.current = frontendProc;
+
+        const frontendReader = frontendProc.output.getReader();
+
+        (async () => {
+          while (true) {
+            const { done, value } = await frontendReader.read();
+            if (done) break;
+
+            if (value) {
+              addLog(value);
+            }
+          }
+        })();
+
+        frontendProc.exit.then((code) => {
           if (!isCurrentGeneration(generation)) return;
 
-          clearTimeout(backendRestartTimerRef.current);
-          backendRestartTimerRef.current = setTimeout(restartBackend, 500);
-        }
-      );
-
-      checkCancellation(generation);
-      setStepStatus('frontendStart', 'in-progress', 'Frontend: Starting...');
-      const frontendProc = await instance.spawn('npm', ['--prefix', 'frontend', 'run', 'dev']);
-      frontendProcRef.current = frontendProc;
-
-      const frontendReader = frontendProc.output.getReader();
-
-      (async () => {
-        while (true) {
-          const { done, value } = await frontendReader.read();
-          if (done) break;
-          if (value) {
-            addLog(value);
+          if (code !== 0) {
+            addLog(`Frontend exited with code ${code}\n`);
+            setStepStatus(
+              'frontendStart',
+              'error',
+              `Frontend crashed (exit code ${code})`
+            );
+          } else {
+            addLog('Frontend stopped gracefully\n');
           }
-        }
-      })();
-
-      frontendProc.exit.then((code) => {
-        if (!isCurrentGeneration(generation)) return;
-        if (code !== 0) {
-          addLog(`Frontend exited with code ${code}\n`);
-          setStepStatus('frontendStart', 'error', `Frontend crashed (exit code ${code})`);
-        } else {
-          addLog('Frontend stopped gracefully\n');
-        }
-      });
+        });
+      } else {
+        setStepStatus(
+          'frontendStart',
+          'skipped',
+          'Frontend: Not required'
+        );
+      }
 
     } catch (err) {
       if (err.message === 'WebContainer boot cancelled') {
@@ -493,14 +558,20 @@ export function useWebContainer(questionIdOrTree) {
       }
 
       const currentWebcontainer = webcontainerRef.current;
+      webcontainerRef.current = null;
+
       if (currentWebcontainer) {
         if (serverReadyListenerRef.current) {
-          currentWebcontainer.off('server-ready', serverReadyListenerRef.current);
+          serverReadyListenerRef.current();
           serverReadyListenerRef.current = null;
         }
 
-        await currentWebcontainer.teardown();
-        addLog('WebContainer shut down successfully\n');
+        try {
+          await currentWebcontainer.teardown();
+          addLog('WebContainer shut down successfully\n');
+        } catch (err) {
+          console.warn('WebContainer teardown:', err.message);
+        }
       }
     } catch (err) {
       console.error('Cleanup error:', err);

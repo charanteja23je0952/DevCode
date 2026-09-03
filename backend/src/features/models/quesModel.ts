@@ -9,6 +9,7 @@ export interface IQuestion {
     baseRepoSlug: string;
     overlaySlug: string;
     category: string;
+    order: number;
 }
 export type QuestionDocument = HydratedDocument<IQuestion>;
 
@@ -50,6 +51,10 @@ const questionSchema = new mongoose.Schema<IQuestion>(
             type: String,
             required: true,
             unique: true
+        },
+        order: {
+            type: Number,
+            required: true
         }
     },
     {

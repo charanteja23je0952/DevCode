@@ -8,7 +8,9 @@ import { getMergedSnapshot } from './snapshotBuilder.js';
 export const getQuestions = catchAsync(async (req: Request, res: Response) => {
     const { layer } = req.query as { layer?: string };
     const filter = layer ? { layer } : {};
-    const questions = await Question.find(filter).select('-category');
+    const questions = await Question.find(filter)
+        .select('-category')
+        .sort({ order: 1 });
     ok(res, "Questions retrieved successfully", questions);
 });
 

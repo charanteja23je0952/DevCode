@@ -30,16 +30,35 @@ export default function Workspace() {
       case 'in-progress': return 'In progress...';
       case 'success': return 'Complete';
       case 'error': return 'Failed';
+      case 'skipped': return 'Not required';
       default: return defaultText;
     }
   };
 
+  const getTestSummary = (output = '') => {
+    const cleanOutput = output.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
+
+    return cleanOutput
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) =>
+        /^(PASS|FAIL)\s*-\s*/i.test(line)
+      )
+      .join('\n');
+  };
+
   const isEnvironmentRunning = () => {
-    return status.mount === 'success' &&
-           status.backendInstall === 'success' &&
-           status.frontendInstall === 'success' &&
-           status.backendStart === 'success' &&
-           status.frontendStart === 'success';
+    const isMountSuccess = status.mount === 'success';
+    const isBackendInstallSuccess = status.backendInstall === 'success' || status.backendInstall === 'skipped';
+    const isFrontendInstallSuccess = status.frontendInstall === 'success' || status.frontendInstall === 'skipped';
+    const isBackendStartSuccess = status.backendStart === 'success' || status.backendStart === 'skipped';
+    const isFrontendStartSuccess = status.frontendStart === 'success' || status.frontendStart === 'skipped';
+
+    return isMountSuccess &&
+           isBackendInstallSuccess &&
+           isFrontendInstallSuccess &&
+           isBackendStartSuccess &&
+           isFrontendStartSuccess;
   };
 
   const handleFileSelect = (file) => {
@@ -316,20 +335,22 @@ export default function Workspace() {
 
       {localTestResult && (
         <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
-          localTestResult.passed 
+          localTestResult.passed
             ? 'bg-green-500/10 border-green-500/30 text-app-success'
             : 'bg-red-500/10 border-red-500/30 text-app-error'
         }`}>
           <strong>
-            {localTestResult.passed 
+            {localTestResult.passed
               ? `${EMOJIS.CHECKMARK} Tests PASSED!`
               : `${EMOJIS.CROSS} Tests FAILED`
             }
           </strong>
           {localTestResult.output && (
-            <div className="mt-2 ui-panel p-2">
+            <div className="mt-2 bg-app-panel border border-app-border rounded p-2">
               <p className="text-xs font-medium text-app-text mb-1">Test Output:</p>
-              <pre className="text-xs text-app-muted whitespace-pre-wrap">{localTestResult.output}</pre>
+              <pre className="text-xs text-app-muted whitespace-pre-wrap">
+                {getTestSummary(localTestResult.output)}
+              </pre>
             </div>
           )}
           <button
@@ -343,12 +364,12 @@ export default function Workspace() {
 
       {submissionResult && (
         <div className={`fixed bottom-4 right-4 border px-4 py-3 rounded-lg shadow-lg max-w-lg z-30 ${
-          submissionResult.success 
+          submissionResult.success
             ? (submissionResult.passed ? 'bg-green-500/10 border-green-500/30 text-app-success' : 'bg-yellow-500/10 border-yellow-500/30 text-app-warning')
               : 'bg-red-500/10 border-red-500/30 text-app-error'
         }`}>
           <strong>
-            {submissionResult.success 
+            {submissionResult.success
               ? (submissionResult.passed ? `${EMOJIS.CHECKMARK} Tests PASSED!` : `! Tests FAILED`)
               : `${EMOJIS.CROSS} Submission Failed`
             }
@@ -358,17 +379,17 @@ export default function Workspace() {
               <p className="mt-1 text-sm">Your solution has been submitted successfully.</p>
               {submissionResult.output && (
                 <div className="mt-2 ui-panel p-2">
-                  <p className="text-xs font-medium text-app-text mb-1">Test Output:</p>
+              <p className="text-xs font-medium text-app-text mb-1">Test Output:</p>
                   <pre className="text-xs text-app-muted whitespace-pre-wrap">{submissionResult.output}</pre>
-                </div>
-              )}
+            </div>
+          )}
               {previewUrl && (
-                <button
-                  onClick={() => setShowLivePreview(true)}
-                  className="ui-button-primary w-full mt-3"
-                >
-                  {EMOJIS.PREVIEW} View Live Preview
-                </button>
+            <button
+              onClick={() => setShowLivePreview(true)}
+              className="ui-button-primary w-full mt-3"
+            >
+              {EMOJIS.PREVIEW} View Live Preview
+            </button>
               )}
             </>
           )}

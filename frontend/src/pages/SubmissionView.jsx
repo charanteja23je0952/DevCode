@@ -354,9 +354,9 @@ export default function SubmissionView() {
               <h3 className="font-semibold text-app-text mb-2">Test Output</h3>
               <div className="ui-panel p-3 flex-1 overflow-hidden flex flex-col">
                 {submission.passed ? (
-                  <div className="text-green-400 font-medium">{EMOJIS.CHECKMARK} Tests Passed</div>
+                  <div className="text-green-400 font-medium">{EMOJIS.CHECKMARK} PASS</div>
                 ) : (
-                  <div className="text-red-400 font-medium">{EMOJIS.CROSS} Tests Failed</div>
+                  <div className="text-red-400 font-medium">{EMOJIS.CROSS} FAIL</div>
                 )}
                 <pre className="mt-2 text-sm text-app-muted whitespace-pre-wrap overflow-y-auto flex-1">
                   {submission.output || 'No output available'}

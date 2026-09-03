@@ -21,6 +21,7 @@ export const EMOJIS = {
   SUCCESS: '✅',
   ERROR: '❌',
   WARNING: '⚠️',
+  SKIPPED: '⏭️',
 
   BACK: '‹',
   FORWARD: '›',
@@ -73,6 +74,9 @@ export const getStatusIcon = (status) => {
 
     case 'error':
       return EMOJIS.ERROR;
+
+    case 'skipped':
+      return EMOJIS.SKIPPED;
 
     default:
       return EMOJIS.PENDING;
