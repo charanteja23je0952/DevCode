@@ -7,7 +7,7 @@ The implementation must:
 - deleteTask: delete the task identified by req.params.id,
 - return the appropriate success status for each operation,
 - return a useful error response when a database operation fails,
-- return 404 when an delete targets a task that does not exist.
+- return 404 when a delete targets a task that does not exist.
 
 Keep the existing API response shapes and route contracts intact.
 

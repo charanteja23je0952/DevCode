@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { findDuplicates } from './src/duplicateFinder.js';
+import { findDuplicates } from '../src/duplicateFinder.js';
 
 function test(name, fn) {
   try {
@@ -39,7 +39,10 @@ test('matches very similar names when the email domain is shared', () => {
     { _id: 'b', name: 'Sarah Connor', email: 'sarah.connor@acme.com' }
   ]);
 
-  assert.ok(findPair(results, 'a', 'b'));
+  const pair = findPair(results, 'a', 'b');
+  assert.ok(pair);
+  assert.equal(pair.reason, 'name-and-domain');
+  assert.ok(pair.score >= 0 && pair.score <= 1);
 });
 
 test('does not match the same name across unrelated email domains', () => {
@@ -54,7 +57,7 @@ test('does not match the same name across unrelated email domains', () => {
 test('does not report weak name resemblance on its own', () => {
   const results = findDuplicates([
     { _id: 'a', name: 'Alice Brown', email: 'alice@example.com' },
-    { _id: 'b', name: 'Alicia Brown', email: 'alicia@other.com' }
+    { _id: 'b', name: 'Alicia Green', email: 'alicia@example.com' }
   ]);
 
   assert.equal(findPair(results, 'a', 'b'), undefined);
@@ -74,6 +77,25 @@ test('returns only the documented response fields', () => {
   ]);
 
   assert.deepEqual(Object.keys(results[0]).sort(), ['ids', 'reason', 'score']);
+});
+
+test('returns the same pair at most once', () => {
+  const results = findDuplicates([
+    { _id: 'a', name: 'John Smith', email: 'john.smith@example.com' },
+    { _id: 'b', name: 'John Smith', email: 'johnsmith@example.com' }
+  ]);
+
+  // Count how many times each pair appears
+  const pairCounts = {};
+  for (const entry of results) {
+    const key = entry.ids.sort().join(',');
+    pairCounts[key] = (pairCounts[key] || 0) + 1;
+  }
+
+  // Each pair should appear at most once
+  for (const count of Object.values(pairCounts)) {
+    assert.equal(count, 1, 'Each pair should appear at most once');
+  }
 });
 
 if (process.exitCode) process.exit(1);

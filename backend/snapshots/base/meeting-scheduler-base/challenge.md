@@ -13,6 +13,7 @@ The scheduling rules are:
 - A slot must fit completely inside the workday.
 - A slot must not overlap an existing meeting.
 - A slot that starts exactly when another meeting ends is allowed.
+- If `durationMinutes` is not a positive finite number, return an empty array.
 
 The function should return every available slot in chronological order using the existing response shape.
 

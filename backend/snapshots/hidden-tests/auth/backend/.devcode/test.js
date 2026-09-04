@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import jwt from "jsonwebtoken";
-import authMiddleware from "./middlewares/authMiddleware.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 function mockReq() {
   return {

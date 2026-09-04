@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
-import taskModel from "./models/Task.js";
-import userModel from "./models/User.js";
-import { createTask } from "./controllers/taskController.js";
-import { signupUser, loginUser } from "./controllers/userController.js";
+import taskModel from "../models/Task.js";
+import userModel from "../models/User.js";
+import { createTask } from "../controllers/taskController.js";
+import { signupUser, loginUser } from "../controllers/userController.js";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "./backend/.env" });
+dotenv.config({ path: "backend/.env" });
 const results = [];
 
 function check(name, condition, detail = "") {
@@ -103,6 +103,54 @@ async function run() {
       );
     }
 
+    {
+      const originalSave = taskModel.prototype.save;
+      const res = mockRes();
+
+      taskModel.prototype.save = async function () {
+        throw new Error("simulated persistence failure");
+      };
+
+      try {
+        await createTask(
+          { body: { title: "Persistence failure task" } },
+          res
+        );
+      } finally {
+        taskModel.prototype.save = originalSave;
+      }
+
+      check(
+        "createTask returns an error when persistence fails",
+        res.statusCode >= 400 && res.statusCode < 500,
+        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
+      );
+    }
+
+    {
+      const res = mockRes();
+      signupUser({ body: { password: "supersecret123" } }, res);
+      await res.done;
+
+      check(
+        "signup rejects a missing email with 400",
+        res.statusCode === 400 && res.cookies.length === 0,
+        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
+      );
+    }
+
+    {
+      const res = mockRes();
+      signupUser({ body: { email: "missing-password@example.com" } }, res);
+      await res.done;
+
+      check(
+        "signup rejects a missing password with 400",
+        res.statusCode === 400 && res.cookies.length === 0,
+        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
+      );
+    }
+
     const email = `new.user.${Date.now()}@example.com`;
     const rawPassword = "supersecret123";
 
@@ -192,6 +240,30 @@ async function run() {
 
     {
       const res = mockRes();
+      loginUser({ body: { password: loginPassword } }, res);
+      await res.done;
+
+      check(
+        "login rejects a missing email with 400",
+        res.statusCode === 400 && res.cookies.length === 0,
+        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
+      );
+    }
+
+    {
+      const res = mockRes();
+      loginUser({ body: { email: loginEmail } }, res);
+      await res.done;
+
+      check(
+        "login rejects a missing password with 400",
+        res.statusCode === 400 && res.cookies.length === 0,
+        `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
+      );
+    }
+
+    {
+      const res = mockRes();
 
       signupUser(
         {
@@ -254,7 +326,7 @@ async function run() {
 
       check(
         "login rejects a non-existent user",
-        res.statusCode === 404,
+        res.statusCode === 404 && res.cookies.length === 0,
         `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
       );
     }
@@ -276,7 +348,7 @@ async function run() {
 
       check(
         "login rejects an incorrect password",
-        res.statusCode === 401,
+        res.statusCode === 401 && res.cookies.length === 0,
         `got status ${res.statusCode}, body ${JSON.stringify(res.body)}`
       );
     }

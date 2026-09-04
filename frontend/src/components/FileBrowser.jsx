@@ -32,7 +32,7 @@ export default function FileBrowser({ webcontainer, onFileSelect, selectedFile }
     const files = [];
 
     for (const entry of entries) {
-      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'build') {
+      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'build' || entry.name === '.devcode') {
         continue;
       }
       const fullPath = dirPath === '/' ? `/${entry.name}` : `${dirPath}/${entry.name}`;

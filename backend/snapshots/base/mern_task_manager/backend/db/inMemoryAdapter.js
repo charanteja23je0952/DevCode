@@ -28,8 +28,7 @@ export function useInMemoryStore(Model) {
     await this.validate();               
     const doc = this.toObject();
     const now = new Date();
-    
-    // Handle timestamps
+
     if (!doc.createdAt) {
       doc.createdAt = now;
     }
@@ -44,7 +43,7 @@ export function useInMemoryStore(Model) {
       [...store.values()].filter((d) => matchesFilter(d, filter)))();
     return {
       sort(sortSpec) { return resultPromise.then((docs) => applySort(docs, sortSpec)); },
-      then(resolve, reject) { return resultPromise.then(resolve, reject); }, // makes `await Model.find()` work directly too
+      then(resolve, reject) { return resultPromise.then(resolve, reject); },
     };
   };
 

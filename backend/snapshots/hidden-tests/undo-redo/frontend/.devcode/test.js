@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHistoryManager } from './src/utils/historyManager.js';
+import { createHistoryManager } from '../src/utils/historyManager.js';
 
 function test(name, fn) {
   try {

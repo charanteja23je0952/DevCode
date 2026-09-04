@@ -8,7 +8,8 @@ The implementation must:
 - implement useGetTasks hook to fetch tasks with proper loading/error states,
 - implement useCreateTask hook to create tasks with proper mutation handling,
 - expose request errors through the hook's error state,
-- support refetch functionality for the tasks query.
+- support refetch functionality for the tasks query,
+- after a successful task creation, make the created task observable through the `tasks` query by updating or refreshing that query.
 
 Do not change the harness UI or other components.
 

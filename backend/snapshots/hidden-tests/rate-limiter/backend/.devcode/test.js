@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createRateLimiter } from './src/rateLimiter.js';
+import { createRateLimiter } from '../src/rateLimiter.js';
 
 function test(name, fn) {
   try {
@@ -92,6 +92,36 @@ test('rejected requests do not extend the window', () => {
 
   assert.equal(rejected.allowed, false);
   assert.equal(limiter('alice').allowed, true);
+});
+
+test('rejected requests are not recorded in the window', () => {
+  let now = 1000;
+  const limiter = createRateLimiter({
+    limit: 2,
+    windowMs: 1000,
+    now: () => now
+  });
+
+  // First request at 1000 - accepted
+  assert.equal(limiter('alice').allowed, true);
+
+  // Second request at 1900 - accepted
+  now = 1900;
+  assert.equal(limiter('alice').allowed, true);
+
+  // Third request at 1901 - rejected (limit reached)
+  now = 1901;
+  assert.equal(limiter('alice').allowed, false);
+
+  // At 2001:
+  // - First request at 1000 is expired (1000 + 1000 = 2000)
+  // - Second request at 1900 is still active (1900 + 1000 = 2900)
+  // - If the buggy implementation recorded the rejected request at 1901, it would still be active
+  // - Correct implementation should accept because only the second request is active
+  now = 2001;
+  const result = limiter('alice');
+  assert.equal(result.allowed, true, 'Should accept after first request expires, even if rejected request was recorded');
+  assert.equal(result.remaining, 0);
 });
 
 test('retryAfterMs points to the expiry of the oldest active request', () => {

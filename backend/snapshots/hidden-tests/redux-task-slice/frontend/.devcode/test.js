@@ -7,7 +7,7 @@ function check(name, condition, detail = "") {
 
 function extractLogicBlock() {
   const source = fs.readFileSync(
-    new URL("./src/components/TaskBoard.jsx", import.meta.url),
+    new URL("../src/components/TaskBoard.jsx", import.meta.url),
     "utf8"
   );
 

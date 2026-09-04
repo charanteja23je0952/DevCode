@@ -1,5 +1,5 @@
-import taskModel from "./models/Task.js";
-import { reorderTasks } from "./controllers/taskController.js";
+import taskModel from "../models/Task.js";
+import { reorderTasks } from "../controllers/taskController.js";
 
 function mockRes() {
   const res = {
@@ -62,6 +62,24 @@ async function run() {
     "reorderTasks returns a 4xx response for malformed changes",
     malformedRes.statusCode >= 400 && malformedRes.statusCode < 500,
     `got ${malformedRes.statusCode}`
+  );
+
+  const partialFailureRes = mockRes();
+  await reorderTasks(
+    {
+      body: {
+        tasks: [
+          { id: first._id.toString(), status: "Done" },
+          { id: "000000000000000000000000", status: "In Progress" },
+        ],
+      },
+    },
+    partialFailureRes
+  );
+  check(
+    "reorderTasks does not report success when any requested update fails",
+    partialFailureRes.statusCode >= 400 && partialFailureRes.statusCode < 500,
+    `got ${partialFailureRes.statusCode}`
   );
 
   const failed = results.filter((result) => !result.pass);

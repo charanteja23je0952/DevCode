@@ -5,7 +5,7 @@ const Input = React.forwardRef(function Input(
   { label, type = "text", className = "", ...props },
   ref
 ) {
-  const id = useId(); // for accessability purpose, we can remove it also htmlFor
+  const id = useId();
   return (
     <div className="w-full">
       {label && (

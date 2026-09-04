@@ -115,10 +115,10 @@ export function useWebContainer(questionIdOrTree) {
       let allExitCode = 0;
 
       try {
-        const backendExists = await webcontainerRef.current.fs.readFile('backend/test.js', 'utf-8').catch(() => null);
+        const backendExists = await webcontainerRef.current.fs.readFile('backend/.devcode/test.js', 'utf-8').catch(() => null);
         if (backendExists) {
           addLog('Running backend tests...\n');
-          const backendProc = await webcontainerRef.current.spawn('node', ['backend/test.js']);
+          const backendProc = await webcontainerRef.current.spawn('node', ['backend/.devcode/test.js']);
           const backendReader = backendProc.output.getReader();
           let backendOutput = '';
 
@@ -148,10 +148,10 @@ export function useWebContainer(questionIdOrTree) {
       }
 
       try {
-        const frontendExists = await webcontainerRef.current.fs.readFile('frontend/test.js', 'utf-8').catch(() => null);
+        const frontendExists = await webcontainerRef.current.fs.readFile('frontend/.devcode/test.js', 'utf-8').catch(() => null);
         if (frontendExists) {
           addLog('Running frontend tests...\n');
-          const frontendProc = await webcontainerRef.current.spawn('node', ['frontend/test.js']);
+          const frontendProc = await webcontainerRef.current.spawn('node', ['frontend/.devcode/test.js']);
           const frontendReader = frontendProc.output.getReader();
           let frontendOutput = '';
 
@@ -351,19 +351,31 @@ export function useWebContainer(questionIdOrTree) {
           }
         })();
 
-        proc.exit.then((code) => {
-          if (!isCurrentGeneration(generation)) return;
+        proc.exit
+          .then((code) => {
+            if (!isCurrentGeneration(generation)) return;
 
-          if (backendProcRef.current !== proc) return;
+            if (backendProcRef.current !== proc) return;
 
-          backendProcRef.current = null;
-          if (code !== 0) {
-            addLog(`Backend exited with code ${code}\n`);
-            setStepStatus('backendStart', 'error', `Backend crashed (exit code ${code})`);
-          } else {
-            addLog('Backend stopped gracefully\n');
-          }
-        });
+            backendProcRef.current = null;
+
+            if (code !== 0) {
+              addLog(`Backend exited with code ${code}\n`);
+              setStepStatus('backendStart', 'error', `Backend crashed (exit code ${code})`);
+            } else {
+              addLog('Backend stopped gracefully\n');
+            }
+          })
+          .catch((err) => {
+            if (
+              err?.message === 'Process aborted' ||
+              !isCurrentGeneration(generation)
+            ) {
+              return;
+            }
+
+            console.error('Backend process exit error:', err);
+          });
 
         return proc;
       };
@@ -474,20 +486,31 @@ export function useWebContainer(questionIdOrTree) {
           }
         })();
 
-        frontendProc.exit.then((code) => {
-          if (!isCurrentGeneration(generation)) return;
+        frontendProc.exit
+          .then((code) => {
+            if (!isCurrentGeneration(generation)) return;
 
-          if (code !== 0) {
-            addLog(`Frontend exited with code ${code}\n`);
-            setStepStatus(
-              'frontendStart',
-              'error',
-              `Frontend crashed (exit code ${code})`
-            );
-          } else {
-            addLog('Frontend stopped gracefully\n');
-          }
-        });
+            if (code !== 0) {
+              addLog(`Frontend exited with code ${code}\n`);
+              setStepStatus(
+                'frontendStart',
+                'error',
+                `Frontend crashed (exit code ${code})`
+              );
+            } else {
+              addLog('Frontend stopped gracefully\n');
+            }
+          })
+          .catch((err) => {
+            if (
+              err?.message === 'Process aborted' ||
+              !isCurrentGeneration(generation)
+            ) {
+              return;
+            }
+
+            console.error('Frontend process exit error:', err);
+          });
       } else {
         setStepStatus(
           'frontendStart',
@@ -497,17 +520,31 @@ export function useWebContainer(questionIdOrTree) {
       }
 
     } catch (err) {
+      if (
+        err?.message === 'Process aborted' ||
+        !isCurrentGeneration(generation)
+      ) {
+        return;
+      }
+
       if (err.message === 'WebContainer boot cancelled') {
         if (instance && webcontainerRef.current !== instance) {
           try {
             await instance.teardown();
           } catch (teardownErr) {
-            console.error('Failed to teardown cancelled WebContainer:', teardownErr);
+            if (teardownErr?.message !== 'Process aborted') {
+              console.error(
+                'Failed to teardown cancelled WebContainer:',
+                teardownErr
+              );
+            }
           }
         }
+
         addLog('Boot cancelled by cleanup\n');
         return;
       }
+
       setError(err.message);
       addLog(`Error: ${err.message}\n`);
     } finally {
@@ -570,7 +607,9 @@ export function useWebContainer(questionIdOrTree) {
           await currentWebcontainer.teardown();
           addLog('WebContainer shut down successfully\n');
         } catch (err) {
-          console.warn('WebContainer teardown:', err.message);
+          if (err?.message !== 'Process aborted') {
+            throw err;
+          }
         }
       }
     } catch (err) {

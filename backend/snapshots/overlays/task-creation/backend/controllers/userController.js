@@ -6,7 +6,7 @@ import generateToken from "../utils/generateToken.js";
 // TODO: Implement signupUser and loginUser.
 //
 // Requirements:
-// - validate that email and password are provided,
+// - validate that email and password are provided and return HTTP 400 when either is missing,
 // - trim and lowercase the email before lookup,
 // - generate the existing JWT cookie only after successful operation.
 //

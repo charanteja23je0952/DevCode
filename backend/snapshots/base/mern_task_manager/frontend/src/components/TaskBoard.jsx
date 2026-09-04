@@ -278,12 +278,10 @@ const TrelloBoard = () => {
   // Apply sorting
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === "recent") {
-      // Sort by createdAt descending (most recent first)
       const dateA = new Date(a.createdAt || 0);
       const dateB = new Date(b.createdAt || 0);
       return dateB - dateA;
     } else if (sortBy === "alphabetical") {
-      // Sort by title alphabetically
       return a.title.localeCompare(b.title);
     }
     return 0;

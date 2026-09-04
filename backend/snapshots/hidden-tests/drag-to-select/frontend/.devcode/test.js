@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { getSelectedItems } from './src/utils/getSelectedItems.js';
+import { getSelectedItems } from '../src/utils/getSelectedItems.js';
 
 function test(name, fn) {
   try {

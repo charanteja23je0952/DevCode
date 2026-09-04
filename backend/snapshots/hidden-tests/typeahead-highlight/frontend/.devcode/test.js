@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { highlightMatch } from './src/utils/highlightMatch.js';
+import { highlightMatch } from '../src/utils/highlightMatch.js';
 
 function test(name, fn) {
   try {

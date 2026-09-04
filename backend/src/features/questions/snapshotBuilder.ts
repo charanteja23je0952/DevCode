@@ -6,7 +6,7 @@ type SubmittedFile = { path: string; contents: string };
 
 const SNAPSHOTS_ROOT = path.join(process.cwd(), "snapshots");
 
-const SKIP_DIRS = new Set(["node_modules", "images", ".git"]);
+const SKIP_DIRS = new Set(["node_modules", "images", ".git", ".devcode"]);
 const SKIP_EXTS = new Set([".png", ".jpg", ".jpeg", ".ico"]);
 const SKIP_FILES = new Set([".DS_Store"]);
 

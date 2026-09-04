@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { findFreeSlots } from './src/scheduler.js';
+import { findFreeSlots } from '../src/scheduler.js';
 
 function test(name, fn) {
   try {

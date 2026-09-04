@@ -6,8 +6,10 @@ import generateToken from "../utils/generateToken.js";
 const signupUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if (!userModel || !email || !password) {
-    throw new Error("Please fill all the fields");
+  if (!email || !password) {
+    return res.status(400).json({
+      message: "Please fill all the fields",
+    });
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -41,6 +43,11 @@ const signupUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({
+      message: "Please fill all the fields",
+    });
+  }
   const normalizedEmail = email?.trim().toLowerCase();
 
   const existingUser = await userModel.findOne({ email: normalizedEmail });
