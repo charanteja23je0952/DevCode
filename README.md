@@ -4,7 +4,7 @@ A browser-based practice platform for learning and testing practical software-de
 
 Instead of solving isolated algorithm problems, you work with realistic frontend and backend code, debug existing behavior, implement missing logic, and deal with API contracts, state management, authentication, and unfamiliar codebases. This makes DevCode useful for building practical development skills, while also giving you experience that can help with practical coding assessments and online assessments that involve working on an existing repository.
 
-The platform includes two types of exercises: larger **full-app debugging tasks** built on a real MERN task manager, and smaller **focused mini-challenges** that isolate specific frontend or backend concepts. The debugging and repository-based format is inspired by practical engineering assessments used by companies such as **Stripe, Retool, and Amazon**.
+The platform includes two types of exercises: larger **full-app debugging tasks** built on a real MERN task manager, and smaller **focused mini-challenges** that isolate specific frontend or backend concepts. The debugging and repository-based format is inspired by practical engineering assessments used by companies such as Stripe and Retool and by a similarly-structured OA I personally encountered from Amazon: an existing codebase, an injected bug, and hidden tests to verify the fix.
 
 ## How It Works
 
