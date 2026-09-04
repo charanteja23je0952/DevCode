@@ -19,3 +19,51 @@ Each action has a label and knows how to apply and undo its own change. The mana
 - Keep returned state isolated from internal state.
 
 Do not change the existing notes UI or action handlers.
+
+## Example
+
+Suppose the initial state is:
+
+```js
+[
+  { id: 1, text: 'Buy milk' }
+]
+```
+
+After performing an Add 'Call mom' action, the state becomes:
+
+```js
+[
+  { id: 1, text: 'Buy milk' },
+  { id: 2, text: 'Call mom' }
+]
+```
+
+Calling undo() should restore:
+
+```js
+[
+  { id: 1, text: 'Buy milk' }
+]
+```
+
+Calling redo() should restore the added note.
+
+The next undo label should be:
+
+```
+Undo: Add 'Call mom'
+```
+
+If you perform another action after the undo, the old redo branch must be discarded:
+
+```
+perform A
+perform B
+undo
+perform C
+```
+
+After that sequence, redo() must not re-apply B.
+
+For grouped actions, several changes should behave as one history entry. For example, a single Clear all operation that removes three notes should require only one undo() call to restore all three.

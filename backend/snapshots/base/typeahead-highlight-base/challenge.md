@@ -23,3 +23,23 @@ should produce:
 Your implementation should handle case-insensitive matching, preserve the original text casing, support multiple occurrences, and return the original text as a single non-matching segment when the query is empty.
 
 Do not change the existing search or keyboard-navigation behavior.
+
+## Example
+
+Given:
+
+```js
+highlightMatch('JavaScript Java', 'java')
+```
+
+the result should be:
+
+```js
+[
+  { text: 'Java', match: true },
+  { text: 'Script ', match: false },
+  { text: 'Java', match: true }
+]
+```
+
+Matching is case-insensitive, but the returned text keeps its original casing.
